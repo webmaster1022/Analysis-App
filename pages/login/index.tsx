@@ -109,7 +109,7 @@ const Login: NextPage = () => {
               name="email"
               label="Email Address"
               placeholder="johndoe@mail.com"
-              classes=""
+              classes={[]}
               rules={validationSchema.email}
             />
 
@@ -119,7 +119,7 @@ const Login: NextPage = () => {
               name="password"
               label="Password"
               placeholder="password"
-              classes=""
+              classes={[]}
               rules={validationSchema.password}
             />
 

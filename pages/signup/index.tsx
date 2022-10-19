@@ -125,7 +125,7 @@ const Signup: NextPage = () => {
                 name="firstname"
                 label="First Name"
                 placeholder="John"
-                classes=""
+                classes={[]}
                 rules={validationSchema.firstname}
               />
               <FormControl
@@ -134,7 +134,7 @@ const Signup: NextPage = () => {
                 name="lastname"
                 label="Last Name"
                 placeholder="Doe"
-                classes=""
+                classes={[]}
                 rules={validationSchema.lastname}
               />
             </div>
@@ -144,7 +144,7 @@ const Signup: NextPage = () => {
               name="email"
               label="Email address"
               placeholder="johndoe@mail.com"
-              classes=""
+              classes={[]}
               rules={validationSchema.email}
             />
 
@@ -154,7 +154,7 @@ const Signup: NextPage = () => {
               name="password"
               label="Password"
               placeholder="password"
-              classes=""
+              classes={[]}
               rules={validationSchema.password}
             />
 

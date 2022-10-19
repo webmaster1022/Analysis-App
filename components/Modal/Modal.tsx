@@ -6,11 +6,17 @@ interface props {
   title: string;
   children: JSX.Element;
   onCancel: () => void;
+  width: number;
 }
 
-export const Modal: React.FC<props> = ({ isVisible, children, onCancel }) => {
+export const Modal: React.FC<props> = ({
+  isVisible,
+  children,
+  onCancel,
+  width,
+}) => {
   return (
-    <MD visible={isVisible} onCancel={onCancel}>
+    <MD visible={isVisible} onCancel={onCancel} width={width}>
       {children}
     </MD>
   );

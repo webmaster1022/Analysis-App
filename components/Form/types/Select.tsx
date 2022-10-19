@@ -7,9 +7,10 @@ const { Option } = Slt;
 interface props {
   name: string;
   label?: string;
-  classes: string;
-  rules?: {};
+  classes: string[];
+  rules?: {}[];
   children?: JSX.Element;
+  onChange?: (value: any) => any;
 }
 
 export const Select: React.FC<props> = ({
@@ -18,17 +19,21 @@ export const Select: React.FC<props> = ({
   classes,
   rules,
   children,
+  onChange,
   ...rest
 }): JSX.Element => {
   console.log(rest);
+  console.log(rules && [rules]);
   return (
     <Form.Item
-      className="mb-6 w-full"
+      className={`mb-6 ${classes[0]}`}
       name={name}
       label={label}
-      rules={rules && [rules]}
+      rules={rules}
     >
-      <Slt {...rest}>{children}</Slt>
+      <Slt {...rest} onChange={onChange}>
+        {children}
+      </Slt>
     </Form.Item>
   );
 };

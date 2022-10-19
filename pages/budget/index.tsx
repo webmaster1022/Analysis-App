@@ -149,6 +149,7 @@ const Budget: NextPage = () => {
           isVisible={isFilterVisible}
           title="dsa"
           onCancel={handleFilterToggle}
+          width={768}
         >
           <>
             <div className="modal-header flex justify-between items-center py-6 px-10 border-b border-typography-100">
@@ -181,7 +182,7 @@ const Budget: NextPage = () => {
                   name="transaction"
                   label="Transaction"
                   placeholder="Income"
-                  classes=""
+                  classes={["flex-1"]}
                 >
                   <>
                     {transactions.map((o) => (
@@ -194,7 +195,7 @@ const Budget: NextPage = () => {
                   name="wallet"
                   label="Wallet"
                   placeholder="Bank"
-                  classes=""
+                  classes={["flex-1"]}
                 />
               </div>
               <div>
@@ -209,13 +210,13 @@ const Budget: NextPage = () => {
                     element="date"
                     name="startDate"
                     placeholder="From"
-                    classes=""
+                    classes={["flex-1"]}
                   />
                   <FormControl
                     element="date"
                     name="endDate"
                     placeholder="To"
-                    classes=""
+                    classes={["flex-1"]}
                   />
                 </div>
               </div>

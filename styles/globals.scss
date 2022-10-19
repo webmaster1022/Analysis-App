@@ -28,7 +28,7 @@
 // start form
 
 .ant-picker,
-.ant-input {
+input {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   padding-left: 10px !important;
@@ -53,12 +53,32 @@
 }
 
 .filter {
+  button {
+    height: 45px;
+  }
   .ant-picker {
-    height: 40px !important;
+    height: 45px !important;
   }
   .ant-select:not(.ant-select-customize-input) {
     .ant-select-selector {
-      height: 40px !important;
+      height: 45px !important;
+    }
+  }
+}
+
+.add-transaction {
+  button {
+    height: 45px;
+  }
+  input {
+    height: 45px;
+  }
+  .ant-picker {
+    height: 45px !important;
+  }
+  .ant-select:not(.ant-select-customize-input) {
+    .ant-select-selector {
+      height: 45px !important;
     }
   }
 }
@@ -81,6 +101,11 @@
     }
     .ant-select-selection-search {
       left: 10 !important;
+      display: flex;
+      align-items: center;
+      input {
+        padding: 0 !important;
+      }
     }
   }
 }
@@ -96,3 +121,17 @@
   border: 1px solid #30be36 !important;
 }
 // end form
+
+// popover styles start
+
+.ant-popover-placement-bottomRight {
+  padding-top: 8px;
+  padding-right: -16px;
+  .ant-popover-arrow {
+    right: 10px;
+  }
+  .ant-popover-inner {
+    border-radius: 6px;
+  }
+}
+// popover styles end

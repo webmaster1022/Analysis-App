@@ -26,10 +26,6 @@ export const IncomeRow: React.FC<props> = ({ classes, children, data }) => {
     transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0.5 : 1,
   };
-  // const updateWithprops = React.Children.map(children, (child?: JSX.Element, i) => {
-  //   // props
-  //   return React.cloneElement(child, { rowData: "data" });
-  // });
   return (
     <tr
       className="bg-primary-50 border-b-4 border-secondary-background-3"
