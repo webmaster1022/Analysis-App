@@ -9,4 +9,5 @@ export const tagTypes = [
   "Wallets",
   "Transaction-types",
   "Categories",
+  "Analytics",
 ];

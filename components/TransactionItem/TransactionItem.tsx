@@ -5,11 +5,13 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Popover } from "../Popover/Popover";
 import { TransactionPopContent } from "./PopoverContent";
+import { transactionResponse1 } from "../../utils/models";
 
 interface props {
   data?: any;
   colors: string[];
   transaction_type?: string;
+  handleForm: () => void;
   toggle?: () => void;
 }
 
@@ -18,6 +20,7 @@ export const TransactionItem: React.FC<props> = ({
   colors,
   transaction_type,
   toggle,
+  handleForm,
 }) => {
   return (
     <div className="bg-primary-50 rounded-lg p-6 mb-4">
@@ -47,7 +50,9 @@ export const TransactionItem: React.FC<props> = ({
           </svg>
           Jan 32
         </p>
-        <Popover content={<TransactionPopContent />}>
+        <Popover
+          content={<TransactionPopContent edit={handleForm} data={data} />}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="ionicon w-6 cursor-pointer"

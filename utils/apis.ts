@@ -7,6 +7,7 @@ import {
   Wallet,
 } from "./models";
 import QueryString from "qs";
+import { toast } from "react-toastify";
 
 type transactionsQueries = {
   populate: string[];
@@ -61,6 +62,34 @@ export const apis = createApi({
       },
       invalidatesTags: ["Transactions"],
     }),
+    updateTransaction: builder.mutation<
+      transactionResponse1,
+      Partial<transactionResponse1["data"]>
+    >({
+      query: (transaction) => {
+        const { id, ...body } = transaction;
+        return {
+          url: `/transactions/${id}`,
+          method: "PUT",
+          body,
+        };
+      },
+      invalidatesTags: ["Transactions"],
+    }),
+    deleteTransaction: builder.mutation<
+      Pick<transactionResponse1, "message">,
+      Pick<transactionResponse1["data"], "id">
+    >({
+      query: (transaction) => {
+        const { id, ...body } = transaction;
+        return {
+          url: `/transactions/${id}`,
+          method: "DELETE",
+          body,
+        };
+      },
+      invalidatesTags: ["Transactions"],
+    }),
   }),
 
   // : (id?: string, queries?: string) => {
@@ -106,4 +135,6 @@ export const {
   useLazyGetWalletsQuery,
   useLazyGetTransactionTypesQuery,
   useAddTransactionMutation,
+  useUpdateTransactionMutation,
+  useDeleteTransactionMutation,
 } = apis;

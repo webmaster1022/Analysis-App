@@ -1,15 +1,18 @@
 export interface transactionResponse1 {
-  id: number;
-  currency: string;
-  amount: number;
-  category: string;
-  createdAt: string;
-  date: string;
-  note: string;
-  publishedAt: string;
-  updatedAt: string;
-  wallet: string;
-  transaction_type: string;
+  message: string;
+  data: {
+    id: number;
+    currency: string;
+    amount: number;
+    category: string;
+    createdAt: string;
+    date: string;
+    note: string;
+    publishedAt: string;
+    updatedAt: string;
+    wallet: string;
+    transaction_type: string;
+  };
 }
 
 export interface transactionResponse {

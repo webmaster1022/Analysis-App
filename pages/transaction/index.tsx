@@ -10,6 +10,7 @@ import { NextPage } from "next";
 import Dashboard from "../../components/Layout/Dashboard";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Modal } from "../../components/Modal/Modal";
+import { toast } from "react-toastify";
 // import { Loader } from "../../components/Loader/Loader";
 import {
   useAddTransactionMutation,
@@ -24,6 +25,8 @@ import {
   Wallet,
 } from "../../utils/models";
 import { Loader } from "../../components/Loader/Loader";
+import { ToastRender } from "../../utils/toast";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -38,7 +41,7 @@ interface filterValues {
 }
 interface addTransactionValues {
   transaction_type: string;
-  wallet_id: number | null;
+  wallet: string | null;
   category: string;
   amount: number | null;
   date: Date | null;
@@ -59,6 +62,9 @@ const Transaction: NextPage = () => {
 
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [isAddTransactionVisible, setAddTransactionVisible] = useState(false);
+  const [addTransaactionMode, setAddTransaactionMode] = useState<
+    string | undefined
+  >();
   const [categories, setCategories] = useState<categoryTypes[]>();
   const [categoryDefaultValue, setCategoryDefaultValue] = useState("");
   const searchInitValues: searchValues = { search: "" };
@@ -69,7 +75,7 @@ const Transaction: NextPage = () => {
     endDate: null,
   };
   const addTransactionInitValues: addTransactionValues = {
-    wallet_id: null,
+    wallet: null,
     transaction_type: "",
     category: "",
     amount: null,
@@ -84,19 +90,10 @@ const Transaction: NextPage = () => {
   const [triggerTypes, { data: transactionTypes }] =
     useLazyGetTransactionTypesQuery();
 
-  const [addTransaction, { error: addTransactionError }] =
-    useAddTransactionMutation();
-
-  // const { items: transactions, isLoading: isTransactionLoading } = useSelector(
-  //   (state: RootState) => state.transaction
-  // );
-  // const { items: wallets, isLoading: isWalletLoading } = useSelector(
-  //   (state: RootState) => state.wallet
-  // );
-  // const { items: transactionTypes, isLoading: isTransactionTypeLoading } =
-  //   useSelector((state: RootState) => state.transactionType);
-
-  // const dispatch: AppDispatch = useDispatch();
+  const [
+    addTransaction,
+    { data: addTransactionResponse, error: addTransactionError },
+  ] = useAddTransactionMutation();
 
   // useEffect(() => {
   //   dispatch(fetchTransactions({ populate: ["wallet_id"] }));
@@ -113,18 +110,30 @@ const Transaction: NextPage = () => {
   const handleFilterToggle = () => {
     setFilterVisible(!isFilterVisible);
   };
-  const handleAddTransactionToggle = async (id?: number) => {
+  const handleAddTransactionToggle = async (
+    data?: transactionResponse1,
+    mode?: string
+  ) => {
     const val = !isAddTransactionVisible;
+    setAddTransaactionMode(mode);
     if (val) {
       triggerWallets();
       triggerTypes({ populate: "*" });
-      if (id) {
-        console.log(transactions);
-        // for (let property in Object.keys(addTransactionInitValues)) {
-        //   form.setFieldsValue({
-        //     [property]: transactions[id].attributes[property],
-        //   });
-        // }
+      if (data) {
+        for (const property of Object.keys(addTransactionInitValues)) {
+          form.setFieldsValue({
+            [property]:
+              property === "date"
+                ? moment(
+                    `${
+                      data[`${property as keyof transactionResponse1}`]
+                        .toString()
+                        .split("T")[0]
+                    }`
+                  )
+                : data[`${property as keyof transactionResponse1}`],
+          });
+        }
       }
       return setAddTransactionVisible(val);
     }
@@ -162,7 +171,13 @@ const Transaction: NextPage = () => {
   const onFinishedTransaction = async (values: transactionResponse1) => {
     try {
       console.log(values);
-      await addTransaction(values).unwrap();
+      if (addTransaactionMode === "add") {
+        await addTransaction(values)
+          .unwrap()
+          .then((payload) => ToastRender(payload.message));
+      } else {
+        console.log("update");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -206,7 +221,7 @@ const Transaction: NextPage = () => {
               <div className="flex gap-4">
                 <FormControl
                   element="select"
-                  name="wallet_id"
+                  name="wallet"
                   label="Wallet"
                   placeholder="Bank"
                   classes={["flex-1"]}
@@ -217,7 +232,7 @@ const Transaction: NextPage = () => {
                 >
                   <>
                     {wallets?.map((w: Wallet) => (
-                      <Option key={w.id} value={w.id}>
+                      <Option key={w.id} value={w.name}>
                         {w.name}
                       </Option>
                     ))}
@@ -521,6 +536,7 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.income.map((t) => (
                   <TransactionItem
+                    handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-1", "bg-green-100 text-green-800"]}
                     data={t}
                   />
@@ -539,6 +555,7 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.debt_loan.map((t) => (
                   <TransactionItem
+                    handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-2", "bg-yellow-100 text-yellow-800"]}
                     data={t}
                   />
@@ -554,6 +571,7 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.expense.map((t) => (
                   <TransactionItem
+                    handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-3", "bg-red-100 text-red-800"]}
                     data={t}
                   />
