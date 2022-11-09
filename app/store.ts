@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { apis } from "../utils/apis";
+import { baseApi } from "../utils/baseUrl";
 // import transactionReducer from "../slices/transactionSlice";
 // import walletReducer from "../slices/walletSlice";
 // import transactionTypeReducer from "../slices/transactionTypeSlice";
@@ -10,14 +10,14 @@ import { apis } from "../utils/apis";
 export const store = configureStore({
   reducer: {
     //reducers are defined here
-    [apis.reducerPath]: apis.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
     // transaction: transactionReducer,
     // wallet: walletReducer,
     // transactionType: transactionTypeReducer,
     // category: categoryReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apis.middleware),
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

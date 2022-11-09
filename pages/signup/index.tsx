@@ -6,6 +6,9 @@ import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
 import * as Yup from "yup";
 import { NextPage } from "next";
+import { useSignupMutation } from "../../utils/apis/auth";
+import { signup } from "../../utils/models";
+import { ToastRender } from "../../utils/toast";
 
 interface formValues {
   firstname: string;
@@ -15,15 +18,15 @@ interface formValues {
 }
 
 const Signup: NextPage = () => {
+  const [form] = Form.useForm();
   const initialValues: formValues = {
     firstname: "",
     lastname: "",
     email: "",
     password: "",
   };
-  const handleSubmit = (values: formValues) => {
-    alert(values);
-  };
+  const [signup, { data: loginResponse, error: loginError }] =
+    useSignupMutation();
   const validationSchema = {
     firstname: {
       required: true,
@@ -42,6 +45,19 @@ const Signup: NextPage = () => {
       message: "Invalid Password",
     },
   };
+
+  const onFinishedSignup = async (values: signup) => {
+    try {
+      console.log(values);
+      const result = await signup(values).unwrap();
+      console.log(result);
+      ToastRender(result.message);
+    } catch (error: any) {
+      const { message } = error.data.error;
+      ToastRender(message, true);
+    }
+  };
+
   return (
     <Auth>
       <>
@@ -117,6 +133,8 @@ const Signup: NextPage = () => {
             layout="vertical"
             initialValues={initialValues}
             autoComplete="off"
+            form={form}
+            onFinish={onFinishedSignup}
           >
             <div className="grid grid-cols-2 gap-4">
               <FormControl
@@ -126,7 +144,7 @@ const Signup: NextPage = () => {
                 label="First Name"
                 placeholder="John"
                 classes={[]}
-                rules={validationSchema.firstname}
+                rules={[validationSchema.firstname]}
               />
               <FormControl
                 type="text"
@@ -135,7 +153,7 @@ const Signup: NextPage = () => {
                 label="Last Name"
                 placeholder="Doe"
                 classes={[]}
-                rules={validationSchema.lastname}
+                rules={[validationSchema.lastname]}
               />
             </div>
             <FormControl
@@ -145,7 +163,7 @@ const Signup: NextPage = () => {
               label="Email address"
               placeholder="johndoe@mail.com"
               classes={[]}
-              rules={validationSchema.email}
+              rules={[validationSchema.email]}
             />
 
             <FormControl
@@ -155,7 +173,7 @@ const Signup: NextPage = () => {
               label="Password"
               placeholder="password"
               classes={[]}
-              rules={validationSchema.password}
+              rules={[validationSchema.password]}
             />
 
             <Button

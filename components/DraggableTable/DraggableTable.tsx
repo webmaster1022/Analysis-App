@@ -37,19 +37,19 @@ export const DraggableTable: React.FC<props> = ({
 }) => {
   const sensors = [useSensor(PointerSensor)];
 
-  const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
-    if (active.id !== over.id) {
-      setItems((items: any) => {
-        const oldIndex = items.findIndex(
-          (item: { id: string; name: string }) => item.id === active.id
-        );
-        const newIndex = items.findIndex(
-          (item: { id: string; name: string }) => item.id === over.id
-        );
-        return arrayMove(items, oldIndex, newIndex);
-      });
-    }
-  };
+  // const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
+  //   if (active.id !== over.id) {
+  //     setItems((items: any) => {
+  //       const oldIndex = items.findIndex(
+  //         (item: { id: string; name: string }) => item.id === active.id
+  //       );
+  //       const newIndex = items.findIndex(
+  //         (item: { id: string; name: string }) => item.id === over.id
+  //       );
+  //       return arrayMove(items, oldIndex, newIndex);
+  //     });
+  //   }
+  // };
   return (
     <div className="overflow-x-auto relative">
       <table className="w-full text-sm text-left">
@@ -57,7 +57,7 @@ export const DraggableTable: React.FC<props> = ({
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
+            // onDragEnd={handleDragEnd}
           >
             <SortableContext
               items={items.map((item) => item.id)}

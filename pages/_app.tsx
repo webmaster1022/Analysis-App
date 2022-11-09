@@ -1,9 +1,10 @@
 import "../styles/globals.scss";
 import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
-import { store } from "../app/store";
+import { store } from "../redux/store";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import dynamic from "next/dynamic";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -25,4 +26,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default dynamic(() => Promise.resolve(MyApp), {
+  ssr: false,
+  loading: () => <div>loading...</div>,
+});

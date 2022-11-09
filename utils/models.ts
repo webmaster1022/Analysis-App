@@ -107,3 +107,92 @@ export interface Wallet {
   publishedAt: string;
   transactions?: {}[];
 }
+
+export interface AnalyticsResponse {
+  data: {
+    transactionsTypesTotal: {
+      income: number;
+      "debt/loan": number;
+      expense: number;
+      total_transactions: number;
+    };
+    transactionsAnalytics: {
+      date: string;
+      expense: number;
+      "debt/loan": number;
+      income: number;
+    }[];
+    walletsAnalytics: {
+      bank: number;
+      crypto: number;
+      momo: number;
+    };
+    expensesAnalytics: {
+      name: string;
+      amount: number;
+      percentage: number;
+    }[];
+  };
+}
+
+export interface analyticsQueries {
+  dateFrom: string;
+  dateTo: string;
+  type: string;
+}
+
+export interface categoriesResponse {
+  data: {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    budget: number | null;
+    transaction_type: {
+      id: number;
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+    };
+  }[];
+}
+
+export interface categoriesResponse1 {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  budget: number | null;
+  transaction_type: {
+    id: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+  };
+}
+
+export interface categoriesQuery {
+  transactionType: string;
+}
+[];
+
+export interface signup {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+export interface login {
+  email: string;
+  password: string;
+}
+
+export interface refreshResponse {
+  message: string;
+  payload: string;
+}

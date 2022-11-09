@@ -7,13 +7,17 @@ interface props {
   label?: string;
   classes: string[];
   rules?: {}[];
+  picker?: "time" | "date" | "week" | "month" | "quarter" | "year";
 }
 
-export const Date: React.FC<props> = ({
+const { RangePicker } = DatePicker;
+
+export const RangeDate: React.FC<props> = ({
   name,
   label,
   classes,
   rules,
+  picker,
   ...rest
 }): JSX.Element => {
   return (
@@ -23,9 +27,10 @@ export const Date: React.FC<props> = ({
       label={label}
       rules={rules}
     >
-      <DatePicker
+      <RangePicker
         {...rest}
         name={name}
+        picker={picker}
         className={`bg-primary-50 border border-typography-300 text-typography-900 text-sm rounded focus:outline-none focus:border-secondary-3 focus:shadow-none hover:border-secondary-3 shadow-none w-full ${classes[1]}`}
       />
     </Form.Item>

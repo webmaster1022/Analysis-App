@@ -7,9 +7,10 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 interface props {
   data: any;
+  options: {};
   onClick?: () => void;
 }
 
-export const PieChart: React.FC<props> = ({ data, ...rest }) => {
-  return <Pie data={data} />;
+export const PieChart: React.FC<props> = ({ data, options, ...rest }) => {
+  return <Pie data={data} options={options} />;
 };

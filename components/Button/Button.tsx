@@ -6,7 +6,7 @@ interface props {
   type: "submit" | "reset" | "button";
   classes: string;
   children: JSX.Element;
-  onClick?: () => void;
+  onClick?: (data?: {}) => void;
 }
 
 export const Button: React.FC<props> = ({
@@ -18,7 +18,7 @@ export const Button: React.FC<props> = ({
   return (
     <button
       type={type}
-      className={`transition font-semibold rounded-lg text-sm justify-center inline-flex items-center hover:duration-150 ${classes}`}
+      className={`transition font-semibold rounded text-sm justify-center inline-flex items-center hover:duration-150 ${classes}`}
       {...rest}
     >
       {children}

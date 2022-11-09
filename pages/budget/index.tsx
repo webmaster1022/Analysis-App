@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Auth from "../../components/Layout/Auth";
 import Link from "next/link";
-import { Select, Table } from "antd";
+import { Select, Space, Table, Tag } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { Button } from "../../components/Button/Button";
 import { FormControl } from "../../components/Form/FormControl";
@@ -15,6 +15,10 @@ import { DraggableTable } from "../../components/DraggableTable/DraggableTable";
 import { IncomeRow } from "./IncomeTable";
 import { ExpenseRow } from "./ExpenseTable";
 import { LiabilityRow } from "./LiabilityTable";
+import { useGetCategoriesQuery } from "../../utils/apis/categories";
+import { categoriesResponse1 } from "../../utils/models";
+import { ColumnsType } from "antd/lib/table";
+import WithPrivateRoute from "../../components/HOC/WithPrivateRoute";
 
 const { Option } = Select;
 
@@ -51,74 +55,24 @@ interface DataType {
   index: number;
 }
 
+const colors = (type: string) => {
+  switch (type) {
+    case "Income":
+      return "bg-secondary-1 bg-green-100 text-green-800";
+    case "Debt/Loan":
+      return "bg-secondary-2 bg-yellow-100 text-yellow-800";
+    case "Expense":
+      return "bg-secondary-3 bg-red-100 text-red-800";
+    default:
+      return "bg-transparent";
+  }
+};
+
 const Budget: NextPage = () => {
   const [isFilterVisible, setFilterVisible] = useState(false);
-  const [incomes, setIncome] = useState([
-    {
-      id: "1",
-      name: "Manoj",
-    },
-    {
-      id: "2",
-      name: "John",
-    },
-    {
-      id: "3",
-      name: "Ronaldo",
-    },
-    {
-      id: "4",
-      name: "Harry",
-    },
-    {
-      id: "5",
-      name: "Jamie",
-    },
-  ]);
-  const [liabilities, setLiability] = useState([
-    {
-      id: "1",
-      name: "Manoj",
-    },
-    {
-      id: "2",
-      name: "John",
-    },
-    {
-      id: "3",
-      name: "Ronaldo",
-    },
-    {
-      id: "4",
-      name: "Harry",
-    },
-    {
-      id: "5",
-      name: "Jamie",
-    },
-  ]);
-  const [expenses, setExpense] = useState([
-    {
-      id: "1",
-      name: "Manoj",
-    },
-    {
-      id: "2",
-      name: "John",
-    },
-    {
-      id: "3",
-      name: "Ronaldo",
-    },
-    {
-      id: "4",
-      name: "Harry",
-    },
-    {
-      id: "5",
-      name: "Jamie",
-    },
-  ]);
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useGetCategoriesQuery();
+  console.log(categories?.filter((d) => d.transaction_type.name === "Income"));
   const searchInitValues: searchValues = { search: "" };
   const filterInitValues: filterValues = {
     transaction: "",
@@ -141,6 +95,39 @@ const Budget: NextPage = () => {
     startDate: Yup.date(),
     endDate: Yup.date(),
   });
+
+  const columns: ColumnsType<categoriesResponse1> = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Transaction Type",
+      key: "transaction_type",
+      dataIndex: "transaction_type",
+      render: (_, { transaction_type }) => (
+        <span
+          className={`${colors(
+            transaction_type.name
+          )} text-xs font-semibold px-2.5 py-0.5 rounded`}
+        >
+          {transaction_type.name}
+        </span>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <a>Invite {record.name}</a>
+          <a>Delete</a>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Dashboard>
@@ -265,40 +252,12 @@ const Budget: NextPage = () => {
             </div>
           </>
         </Navbar>
-        <div className="flex justify-between items-center px-16 py-6 my-6">
+        <div className="flex justify-between items-center px-6 py-6">
           <h1 className="text-2xl font-semibold">Budgets</h1>
         </div>
-        <div className="flex flex-col px-16 py-6 gap-12">
-          <div className="flex-1 grow">
-            <div className="pl-2 text-lg w-fit text-typography-900 font-semibold  mb-6">
-              <h2>Income</h2>
-              <hr className="h-1 w-2/4 bg-secondary-1 border-0 mt-1" />
-            </div>
-            <DraggableTable items={incomes} setItems={setIncome}>
-              <IncomeRow />
-            </DraggableTable>
-          </div>
-          <div className="flex-1 grow">
-            <div className="pl-2 text-lg w-fit text-typography-900 font-semibold  mb-6">
-              <h2>Liability</h2>
-              <hr className="h-1 w-2/4 bg-secondary-2 border-0 mt-1" />
-            </div>
-            <div>
-              <DraggableTable items={liabilities} setItems={setLiability}>
-                <LiabilityRow />
-              </DraggableTable>
-            </div>
-          </div>
-          <div className="flex-1 grow">
-            <div className="pl-2 text-lg w-fit text-typography-900 font-semibold  mb-6">
-              <h2>Expense</h2>
-              <hr className="h-1 w-2/4 bg-secondary-3 border-0 mt-1" />
-            </div>
-            <div>
-              <DraggableTable items={expenses} setItems={setExpense}>
-                <ExpenseRow />
-              </DraggableTable>
-            </div>
+        <div className="flex px-6 py-6">
+          <div className="flex-1">
+            {categories && <Table columns={columns} dataSource={categories} />}
           </div>
         </div>
       </>
@@ -306,4 +265,4 @@ const Budget: NextPage = () => {
   );
 };
 
-export default Budget;
+export default WithPrivateRoute(Budget);

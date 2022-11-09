@@ -6,6 +6,13 @@ import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
 import * as Yup from "yup";
 import { NextPage } from "next";
+import { useLoginMutation } from "../../utils/apis/auth";
+import { login } from "../../utils/models";
+import { ToastRender } from "../../utils/toast";
+import WithPublicRoute from "../../components/HOC/WithPublicRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "../../redux/slices/auth.slice";
+import { RootState } from "../../app/store";
 
 interface formValues {
   email: string;
@@ -13,10 +20,12 @@ interface formValues {
 }
 
 const Login: NextPage = () => {
+  const dispatch = useDispatch();
+  const [form] = Form.useForm();
   const initialValues: formValues = { email: "", password: "" };
-  const handleSubmit = (values: formValues) => {
-    alert(values);
-  };
+  const [login, { data: loginResponse, error: loginError }] =
+    useLoginMutation();
+
   const validationSchema = {
     email: {
       required: true,
@@ -26,6 +35,19 @@ const Login: NextPage = () => {
       required: true,
       message: "Invalid Password",
     },
+  };
+
+  const onFinishedLogin = async (values: login) => {
+    try {
+      console.log(values);
+      const result = await login(values).unwrap();
+      // console.log(result);
+      dispatch(setCredentials({ refreshToken: result.token }));
+      ToastRender(result.message);
+    } catch (error: any) {
+      const { message } = error.data.error;
+      ToastRender(message, true);
+    }
   };
   return (
     <Auth>
@@ -102,6 +124,8 @@ const Login: NextPage = () => {
             layout="vertical"
             initialValues={initialValues}
             autoComplete="off"
+            form={form}
+            onFinish={onFinishedLogin}
           >
             <FormControl
               type="email"
@@ -110,7 +134,7 @@ const Login: NextPage = () => {
               label="Email Address"
               placeholder="johndoe@mail.com"
               classes={[]}
-              rules={validationSchema.email}
+              rules={[validationSchema.email]}
             />
 
             <FormControl
@@ -120,7 +144,7 @@ const Login: NextPage = () => {
               label="Password"
               placeholder="password"
               classes={[]}
-              rules={validationSchema.password}
+              rules={[validationSchema.password]}
             />
 
             <Button
@@ -129,9 +153,6 @@ const Login: NextPage = () => {
             >
               <>Login</>
             </Button>
-            <Link href="/transaction">
-              <a>transaction</a>
-            </Link>
           </Form>
         </div>
       </>
@@ -139,4 +160,4 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default WithPublicRoute(Login);

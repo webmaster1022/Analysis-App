@@ -7,7 +7,7 @@ interface props {
 }
 export const Navbar: React.FC<props> = ({ children }) => {
   return (
-    <nav className="bg-primary-50 w-full flex justify-between px-6 py-3">
+    <nav className="navbar bg-primary-50 w-full flex justify-between px-6 py-3">
       {children}
     </nav>
   );

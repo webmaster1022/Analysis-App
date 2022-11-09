@@ -21,6 +21,7 @@ interface props {
   onChange?: (value: any) => any;
   value?: string;
   defaultValue?: string;
+  picker?: "time" | "date" | "week" | "month" | "quarter" | "year";
 }
 
 export const FormControl: React.FC<props> = ({

@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Product() {
   return (
-    <div className="bg-primary shadow-lg px-8 py-4 rounded-md">
+    <div className="bg-primary shadow-lg px-8 py-4 rounded">
       <a href="#">
         <div
           style={{

@@ -14,10 +14,12 @@ import { toast } from "react-toastify";
 // import { Loader } from "../../components/Loader/Loader";
 import {
   useAddTransactionMutation,
+  useDeleteTransactionMutation,
   useGetTransactionsQuery,
-  useLazyGetTransactionTypesQuery,
-  useLazyGetWalletsQuery,
-} from "../../utils/apis";
+  useUpdateTransactionMutation,
+} from "../../utils/apis/transaction";
+import { useLazyGetTransactionTypesQuery } from "../../utils/apis/transactionTypes";
+import { useLazyGetWalletsQuery } from "../../utils/apis/wallet";
 import { TransactionItem } from "../../components/TransactionItem/TransactionItem";
 import {
   transactionResponse,
@@ -27,6 +29,7 @@ import {
 import { Loader } from "../../components/Loader/Loader";
 import { ToastRender } from "../../utils/toast";
 import moment from "moment";
+import WithPrivateRoute from "../../components/HOC/WithPrivateRoute";
 
 const { Option } = Select;
 
@@ -40,6 +43,7 @@ interface filterValues {
   endDate: Date | null;
 }
 interface addTransactionValues {
+  id: number | null;
   transaction_type: string;
   wallet: string | null;
   category: string;
@@ -75,6 +79,7 @@ const Transaction: NextPage = () => {
     endDate: null,
   };
   const addTransactionInitValues: addTransactionValues = {
+    id: null,
     wallet: null,
     transaction_type: "",
     category: "",
@@ -94,6 +99,10 @@ const Transaction: NextPage = () => {
     addTransaction,
     { data: addTransactionResponse, error: addTransactionError },
   ] = useAddTransactionMutation();
+
+  const [updateTransaction, { data: updateTransactionResponse }] =
+    useUpdateTransactionMutation();
+  const [deleteTransaction] = useDeleteTransactionMutation();
 
   // useEffect(() => {
   //   dispatch(fetchTransactions({ populate: ["wallet_id"] }));
@@ -115,10 +124,12 @@ const Transaction: NextPage = () => {
     mode?: string
   ) => {
     const val = !isAddTransactionVisible;
+    console.log(mode);
     setAddTransaactionMode(mode);
     if (val) {
       triggerWallets();
       triggerTypes({ populate: "*" });
+      console.log(data);
       if (data) {
         for (const property of Object.keys(addTransactionInitValues)) {
           form.setFieldsValue({
@@ -138,6 +149,16 @@ const Transaction: NextPage = () => {
       return setAddTransactionVisible(val);
     }
     return setAddTransactionVisible(val);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const result = await deleteTransaction(id).unwrap();
+      console.log(result);
+      ToastRender(result.message);
+    } catch (error: any) {
+      ToastRender(error.message, true);
+    }
   };
 
   const walletSelectionHandler = (value: string) => {
@@ -168,15 +189,30 @@ const Transaction: NextPage = () => {
     endDate: Yup.date(),
   });
 
-  const onFinishedTransaction = async (values: transactionResponse1) => {
+  const onFinishedTransaction = async (
+    values: transactionResponse1["data"]
+  ) => {
     try {
       console.log(values);
-      if (addTransaactionMode === "add") {
+      if (addTransaactionMode !== "add") {
+        console.log("update");
+
+        await updateTransaction({ ...values })
+          .unwrap()
+          .then((payload) => {
+            form.resetFields();
+            ToastRender(payload.message);
+          })
+          .catch((payload) => ToastRender(payload.message, true));
+      } else {
+        console.log("add");
         await addTransaction(values)
           .unwrap()
-          .then((payload) => ToastRender(payload.message));
-      } else {
-        console.log("update");
+          .then((payload) => {
+            form.resetFields();
+            ToastRender(payload.message);
+          })
+          .catch((payload) => ToastRender(payload.message, true));
       }
     } catch (error) {
       console.log(error);
@@ -282,6 +318,14 @@ const Transaction: NextPage = () => {
                 </FormControl>
               </div>
               <div className="flex gap-4">
+                <FormControl
+                  type="number"
+                  element="input"
+                  name="id"
+                  placeholder="0"
+                  classes={["flex-1 hidden"]}
+                  rules={[{ required: true, message: "Please input amount" }]}
+                />
                 <FormControl
                   type="number"
                   element="input"
@@ -441,7 +485,7 @@ const Transaction: NextPage = () => {
                   placeholder="Search Income, Expense..."
                   classes={[
                     "",
-                    "block p-2 text-sm text-typography-900 rounded-lg flex",
+                    "block p-2 text-sm text-typography-900 rounded flex",
                   ]}
                   prefix={
                     <svg
@@ -491,7 +535,7 @@ const Transaction: NextPage = () => {
               <Button
                 type="button"
                 classes="py-2 px-4 text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
-                onClick={handleAddTransactionToggle}
+                onClick={() => handleAddTransactionToggle(undefined, "add")}
               >
                 <span>New Transaction</span>
               </Button>
@@ -529,13 +573,14 @@ const Transaction: NextPage = () => {
         </div>
         <div className="flex px-6 py-6 gap-12">
           <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-1 rounded-lg rounded-lg mb-6">
+            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-1 rounded mb-6">
               <h2>Income</h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.income}>
               <>
                 {transactions?.income.map((t) => (
                   <TransactionItem
+                    handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-1", "bg-green-100 text-green-800"]}
                     data={t}
@@ -545,7 +590,7 @@ const Transaction: NextPage = () => {
             </Loader>
           </div>
           <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-2 rounded-lg rounded-lg mb-6">
+            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-2 rounded mb-6">
               <h2>Debt / Loan</h2>
             </div>
             <Loader
@@ -555,6 +600,7 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.debt_loan.map((t) => (
                   <TransactionItem
+                    handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-2", "bg-yellow-100 text-yellow-800"]}
                     data={t}
@@ -564,13 +610,14 @@ const Transaction: NextPage = () => {
             </Loader>
           </div>
           <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-3 rounded-lg rounded-lg mb-6">
+            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-3 rounded mb-6">
               <h2>Expense</h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.expense}>
               <>
                 {transactions?.expense.map((t) => (
                   <TransactionItem
+                    handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-3", "bg-red-100 text-red-800"]}
                     data={t}
@@ -585,4 +632,4 @@ const Transaction: NextPage = () => {
   );
 };
 
-export default Transaction;
+export default WithPrivateRoute(Transaction);

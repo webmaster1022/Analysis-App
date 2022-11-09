@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { transactionResponse1 } from "../../utils/models";
@@ -6,8 +6,9 @@ import { Popconfirm } from "antd";
 
 interface props {
   toggle?: () => void;
-  edit: (data: transactionResponse1) => void;
-  data: transactionResponse1;
+  edit: (data: transactionResponse1["data"], mode: string) => void;
+  deleteItem: (id: number) => void;
+  data: transactionResponse1["data"];
   deleteText?: string;
 }
 
@@ -16,10 +17,16 @@ export const TransactionPopContent: React.FC<props> = ({
   edit,
   data,
   deleteText = "Are you sure to delete this transaction?",
+  deleteItem,
 }) => {
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex gap-2 cursor-pointer" onClick={() => edit(data)}>
+      <div
+        className="flex gap-2 cursor-pointer"
+        onClick={() => edit(data, "update")}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="ionicon w-4"
@@ -43,6 +50,8 @@ export const TransactionPopContent: React.FC<props> = ({
         title={deleteText}
         okText="Yes"
         cancelText="No"
+        okButtonProps={{ loading: confirmLoading }}
+        onConfirm={() => deleteItem(data?.id)}
       >
         <div className="flex gap-2 cursor-pointer">
           <svg

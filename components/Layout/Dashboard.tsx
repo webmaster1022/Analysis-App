@@ -169,7 +169,7 @@ const Dashboard: React.FC<props> = ({ children }) => {
             </Sidenav>
           </li>
           <li className="mb-3">
-            <Sidenav link="/setting">
+            <Sidenav link="/">
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

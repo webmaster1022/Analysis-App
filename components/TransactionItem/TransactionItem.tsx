@@ -13,6 +13,7 @@ interface props {
   transaction_type?: string;
   handleForm: () => void;
   toggle?: () => void;
+  handleDelete: (id: number) => void;
 }
 
 export const TransactionItem: React.FC<props> = ({
@@ -21,9 +22,10 @@ export const TransactionItem: React.FC<props> = ({
   transaction_type,
   toggle,
   handleForm,
+  handleDelete,
 }) => {
   return (
-    <div className="bg-primary-50 rounded-lg p-6 mb-4">
+    <div className="bg-primary-50 rounded p-6 mb-4">
       <div className="flex justify-between items-center">
         <p className="flex items-center text-xs text-typography-300">
           <svg
@@ -51,7 +53,13 @@ export const TransactionItem: React.FC<props> = ({
           Jan 32
         </p>
         <Popover
-          content={<TransactionPopContent edit={handleForm} data={data} />}
+          content={
+            <TransactionPopContent
+              edit={handleForm}
+              deleteItem={handleDelete}
+              data={data}
+            />
+          }
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
