@@ -5,6 +5,7 @@ import { Select } from "./types/Select";
 import { Date } from "./types/Date";
 import { TextArea } from "./types/TextArea";
 import { categoryTypes } from "../../pages/transaction";
+import { Moment } from "moment";
 
 interface props {
   element: string;
@@ -20,7 +21,7 @@ interface props {
   showSearch?: boolean;
   onChange?: (value: any) => any;
   value?: string;
-  defaultValue?: string;
+  defaultValue?: Moment;
   picker?: "time" | "date" | "week" | "month" | "quarter" | "year";
 }
 

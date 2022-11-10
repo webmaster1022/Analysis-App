@@ -1,5 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { transactionResponse, transactionResponse1 } from "../models";
+import {
+  transactionQueries,
+  transactionResponse,
+  transactionResponse1,
+} from "../models";
 import QueryString from "qs";
 import { toast } from "react-toastify";
 import { baseApi } from "../baseUrl";
@@ -14,9 +18,12 @@ type getTransactionTypeCategoriesQueries = {
 
 export const transactionApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getTransactions: builder.query<transactionResponse, void>({
-      query: () => {
-        return `/transactions`;
+    getTransactions: builder.query<transactionResponse, transactionQueries>({
+      query: (arg) => {
+        const queries = QueryString.stringify(arg, {
+          encodeValuesOnly: true,
+        });
+        return `/transactions?${queries}`;
       },
       providesTags: ["Transactions"],
     }),

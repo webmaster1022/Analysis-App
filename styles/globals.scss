@@ -30,7 +30,7 @@
 .ant-picker,
 .ant-input,
 .ant-select:not(.ant-select-customize-input) > .ant-select-selector {
-  background-color: #f1fbf1;
+  background-color: #f3f7f3;
 }
 
 .ant-picker,
@@ -55,9 +55,28 @@ input {
   }
 }
 
+.navbar.transaction {
+  .ant-picker {
+    height: 40px;
+    background-color: transparent;
+    border: 0;
+  }
+}
+
 .auth {
   .ant-input {
     height: 60px;
+  }
+}
+
+.filter-date {
+  .ant-picker {
+    height: 40px;
+  }
+  .ant-select:not(.ant-select-customize-input) {
+    .ant-select-selector {
+      height: 40px !important;
+    }
   }
 }
 
@@ -158,3 +177,92 @@ input {
   }
 }
 // popover styles end
+
+//collapse styles start
+.ant-collapse-borderless {
+  background-color: transparent;
+
+  .ant-collapse-item {
+    &:last-child {
+      .ant-collapse-header {
+        border-radius: 4px 4px 0 0;
+      }
+    }
+    .ant-collapse-content {
+      .ant-collapse-content-box {
+        padding-top: 0;
+      }
+    }
+  }
+}
+
+.ant-collapse {
+  .ant-collapse-item {
+    .ant-collapse-header {
+      align-items: center;
+      .ant-collapse-expand-icon {
+        display: flex;
+        flex: 0.2;
+      }
+      .ant-collapse-header-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #141418;
+        flex: 11.8;
+      }
+      .ant-collapse-arrow {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.ant-collapse-item {
+  .ant-collapse-content {
+    .ant-collapse-content-box {
+      padding-top: 0;
+    }
+  }
+  .ant-collapse-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #f0f0f0;
+    .ant-collapse-arrow {
+      margin-right: 0;
+    }
+  }
+}
+
+.ant-collapse-content {
+  .ant-collapse-content-box {
+    padding: 0;
+  }
+}
+
+.site-collapse-custom-collapse .site-collapse-custom-panel,
+.site-collapse-custom-collapse .site-collapse-custom-panel {
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 0px;
+  border-radius: 2px;
+}
+
+// collapse styles end
+
+// table styles start
+
+.ant-table {
+  .ant-table-tbody {
+    .ant-table-row {
+      &:last-child {
+        .ant-table-cell {
+          &:first-child {
+            border-radius: 0 0 0 4px;
+          }
+          &:last-child {
+            border-radius: 0 0 4px 0;
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,8 +20,11 @@ module.exports = {
           3: "#5E9261",
         },
         background: {
-          3: "#F1FBF1",
+          3: "#F3F7F3",
         },
+      },
+      light: {
+        1: "#fafafa",
       },
       typography: {
         900: "#141418",

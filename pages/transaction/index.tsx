@@ -30,6 +30,7 @@ import { Loader } from "../../components/Loader/Loader";
 import { ToastRender } from "../../utils/toast";
 import moment from "moment";
 import WithPrivateRoute from "../../components/HOC/WithPrivateRoute";
+import omit from "lodash.omit";
 
 const { Option } = Select;
 
@@ -43,7 +44,7 @@ interface filterValues {
   endDate: Date | null;
 }
 interface addTransactionValues {
-  id: number | null;
+  id?: number;
   transaction_type: string;
   wallet: string | null;
   category: string;
@@ -63,13 +64,16 @@ export interface categoryTypes {
 
 const Transaction: NextPage = () => {
   const [form] = Form.useForm();
-
+  const [currentDate, setcurrentDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [isAddTransactionVisible, setAddTransactionVisible] = useState(false);
   const [addTransaactionMode, setAddTransaactionMode] = useState<
     string | undefined
   >();
   const [categories, setCategories] = useState<categoryTypes[]>();
+  const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [categoryDefaultValue, setCategoryDefaultValue] = useState("");
   const searchInitValues: searchValues = { search: "" };
   const filterInitValues: filterValues = {
@@ -79,7 +83,7 @@ const Transaction: NextPage = () => {
     endDate: null,
   };
   const addTransactionInitValues: addTransactionValues = {
-    id: null,
+    id: undefined,
     wallet: null,
     transaction_type: "",
     category: "",
@@ -89,7 +93,10 @@ const Transaction: NextPage = () => {
   };
 
   const { data: transactions, isLoading: isTransactionLoading } =
-    useGetTransactionsQuery();
+    useGetTransactionsQuery({
+      dateFrom: moment(currentDate).startOf("month").format("YYYY-MM-DD"),
+      dateTo: moment(currentDate).endOf("month").format("YYYY-MM-DD"),
+    });
   const [triggerWallets, { data: wallets }] = useLazyGetWalletsQuery();
 
   const [triggerTypes, { data: transactionTypes }] =
@@ -154,11 +161,16 @@ const Transaction: NextPage = () => {
   const handleDelete = async (id: number) => {
     try {
       const result = await deleteTransaction(id).unwrap();
-      console.log(result);
+      setDeleteConfirmVisible(false);
       ToastRender(result.message);
     } catch (error: any) {
       ToastRender(error.message, true);
     }
+  };
+
+  const toggleDeleteConfirm = () => {
+    console.log(isDeleteConfirmVisible);
+    setDeleteConfirmVisible((prev) => !prev);
   };
 
   const walletSelectionHandler = (value: string) => {
@@ -206,6 +218,7 @@ const Transaction: NextPage = () => {
           .catch((payload) => ToastRender(payload.message, true));
       } else {
         console.log("add");
+        values = omit(values, ["id"]);
         await addTransaction(values)
           .unwrap()
           .then((payload) => {
@@ -324,7 +337,7 @@ const Transaction: NextPage = () => {
                   name="id"
                   placeholder="0"
                   classes={["flex-1 hidden"]}
-                  rules={[{ required: true, message: "Please input amount" }]}
+                  rules={[{ required: false, message: "Please input amount" }]}
                 />
                 <FormControl
                   type="number"
@@ -452,7 +465,7 @@ const Transaction: NextPage = () => {
             </Form>
           </>
         </Modal>
-        <Navbar>
+        <Navbar classes={"transaction"}>
           <>
             <Form
               layout="vertical"
@@ -508,6 +521,15 @@ const Transaction: NextPage = () => {
               </div>
             </Form>
             <div className="flex gap-6">
+              <FormControl
+                element="date"
+                name="date"
+                placeholder="2022-01"
+                classes={["flex-1"]}
+                picker={"month"}
+                defaultValue={moment(currentDate)}
+                rules={[{ required: true, message: "Please input date" }]}
+              />
               <Button
                 type="button"
                 classes="p-2 flex gap-2"
@@ -580,10 +602,12 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.income.map((t) => (
                   <TransactionItem
+                    toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-1", "bg-green-100 text-green-800"]}
                     data={t}
+                    isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}
               </>
@@ -600,10 +624,12 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.debt_loan.map((t) => (
                   <TransactionItem
+                    toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-2", "bg-yellow-100 text-yellow-800"]}
                     data={t}
+                    isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}
               </>
@@ -617,10 +643,12 @@ const Transaction: NextPage = () => {
               <>
                 {transactions?.expense.map((t) => (
                   <TransactionItem
+                    toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-secondary-3", "bg-red-100 text-red-800"]}
                     data={t}
+                    isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}
               </>

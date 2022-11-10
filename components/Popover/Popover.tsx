@@ -8,11 +8,15 @@ interface props {
   children: JSX.Element;
   content?: JSX.Element;
   onClick?: () => void;
+  visible: boolean;
+  toggleDeleteConfirmHandler: () => void;
 }
 export const Popover: React.FC<props> = ({
   classes,
   children,
   content,
+  visible,
+  toggleDeleteConfirmHandler,
   ...rest
 }) => {
   return (

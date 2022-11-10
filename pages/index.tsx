@@ -159,7 +159,7 @@ const Home: NextPage = () => {
     <Dashboard>
       <>
         <Navbar>
-          <div className="flex gap-6 ml-auto">
+          <div className="filter-date flex gap-6 ml-auto">
             <FormControl
               element="select"
               name="filterRangeDate"
@@ -174,7 +174,20 @@ const Home: NextPage = () => {
                 ))}
               </>
             </FormControl>
-            <RangeDate name="filterRangeDate" classes={[]} picker="date" />
+            <FormControl
+              element="date"
+              name="date"
+              placeholder="2022-01-01"
+              classes={["flex-1"]}
+              rules={[{ required: true, message: "Please input date" }]}
+            />
+            <FormControl
+              element="date"
+              name="date"
+              placeholder="2022-01-01"
+              classes={["flex-1"]}
+              rules={[{ required: true, message: "Please input date" }]}
+            />
           </div>
         </Navbar>
         <div className="flex px-6 py-6">

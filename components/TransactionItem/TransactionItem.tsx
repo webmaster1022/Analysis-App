@@ -14,6 +14,8 @@ interface props {
   handleForm: () => void;
   toggle?: () => void;
   handleDelete: (id: number) => void;
+  toggleDeleteConfirm: () => void;
+  isDeleteConfirmVisible: boolean;
 }
 
 export const TransactionItem: React.FC<props> = ({
@@ -23,6 +25,8 @@ export const TransactionItem: React.FC<props> = ({
   toggle,
   handleForm,
   handleDelete,
+  toggleDeleteConfirm,
+  isDeleteConfirmVisible,
 }) => {
   return (
     <div className="bg-primary-50 rounded p-6 mb-4">
@@ -53,6 +57,8 @@ export const TransactionItem: React.FC<props> = ({
           Jan 32
         </p>
         <Popover
+          toggleDeleteConfirmHandler={toggleDeleteConfirm}
+          visible={isDeleteConfirmVisible}
           content={
             <TransactionPopContent
               edit={handleForm}

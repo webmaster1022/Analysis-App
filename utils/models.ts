@@ -1,7 +1,7 @@
 export interface transactionResponse1 {
   message: string;
   data: {
-    id: number;
+    id?: number;
     currency: string;
     amount: number;
     category: string;
@@ -68,6 +68,11 @@ export interface transactionResponse {
     wallet: string;
     transaction_type: string;
   }[];
+}
+
+export interface transactionQueries {
+  dateFrom: string;
+  dateTo: string;
 }
 
 export interface Wallet {
