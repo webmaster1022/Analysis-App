@@ -11,10 +11,6 @@ import { NextPage } from "next";
 import Dashboard from "../../components/Layout/Dashboard";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Modal } from "../../components/Modal/Modal";
-import { DraggableTable } from "../../components/DraggableTable/DraggableTable";
-import { IncomeRow } from "./IncomeTable";
-import { ExpenseRow } from "./ExpenseTable";
-import { LiabilityRow } from "./LiabilityTable";
 import {
   useAddBudgetMutation,
   useDeleteBudgetMutation,
