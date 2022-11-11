@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { refreshResponse } from "./models";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:1337/api/",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
   credentials: "include",
 });
 const baseQueryWithRefresh: typeof baseQuery = async (
