@@ -65,7 +65,10 @@ input {
 
 .auth {
   .ant-input {
-    height: 60px;
+    height: 45px;
+  }
+  button[type="submit"] {
+    height: 45px;
   }
 }
 
@@ -249,20 +252,24 @@ input {
 // collapse styles end
 
 // table styles start
-
-.ant-table {
-  .ant-table-tbody {
-    .ant-table-row {
-      &:last-child {
-        .ant-table-cell {
-          &:first-child {
-            border-radius: 0 0 0 4px;
-          }
-          &:last-child {
-            border-radius: 0 0 4px 0;
+.budget {
+  .ant-table {
+    .ant-table-tbody {
+      .ant-table-row {
+        &:last-child {
+          .ant-table-cell {
+            &:first-child {
+              border-radius: 0 0 0 4px;
+            }
+            &:last-child {
+              border-radius: 0 0 4px 0;
+            }
           }
         }
       }
     }
+  }
+  .ant-pagination {
+    display: none;
   }
 }

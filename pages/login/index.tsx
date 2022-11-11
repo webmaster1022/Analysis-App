@@ -149,7 +149,7 @@ const Login: NextPage = () => {
 
             <Button
               type="submit"
-              classes="w-full p-4 text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+              classes="w-full text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
             >
               <>Login</>
             </Button>

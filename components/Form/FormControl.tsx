@@ -19,9 +19,9 @@ interface props {
   children?: JSX.Element;
   rows?: number;
   showSearch?: boolean;
-  onChange?: (value: any) => any;
+  onChange?: (value: any, dateString?: string) => any;
   value?: string;
-  defaultValue?: Moment;
+  defaultValue?: Moment | string;
   picker?: "time" | "date" | "week" | "month" | "quarter" | "year";
 }
 

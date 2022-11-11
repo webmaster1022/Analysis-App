@@ -165,23 +165,36 @@ export interface categoriesResponse {
 }
 
 export interface categoriesResponse1 {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  budget: number | null;
-  transaction_type: {
+  message: string;
+  data: {
     id: number;
     name: string;
     createdAt: string;
     updatedAt: string;
     publishedAt: string;
+    budget: number | null;
+    transaction_type: {
+      id: number;
+      name: string;
+      createdAt: string;
+      updatedAt: string;
+      publishedAt: string;
+    };
   };
 }
 
-export interface categoriesQuery {
-  transactionType: string;
+export interface categoriesBody {
+  id?: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  budget: number | null;
+  transaction_type: number;
+}
+
+export interface categoriesQueries {
+  user: number;
 }
 [];
 

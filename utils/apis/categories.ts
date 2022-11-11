@@ -1,23 +1,67 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { categoriesResponse } from "../models";
+import {
+  categoriesBody,
+  categoriesQueries,
+  categoriesResponse,
+  categoriesResponse1,
+} from "../models";
 import QueryString from "qs";
 import { baseApi } from "../baseUrl";
-
-type transactionsQueries = {
-  populate: string[];
-};
-
-type getTransactionTypeCategoriesQueries = {
-  populate: string;
-};
 
 export const categoryApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCategories: builder.query<categoriesResponse["data"], void>({
-      query: () => `/categories`,
+      query: () => {
+        // const queries = QueryString.stringify(arg, {
+        //   encodeValuesOnly: true,
+        // });
+        return `/categories`;
+      },
       providesTags: ["Categories"],
+    }),
+    addBudget: builder.mutation<categoriesResponse1, categoriesBody>({
+      query: (budget) => {
+        return {
+          url: `/categories`,
+          method: "POST",
+          body: { data: budget },
+        };
+      },
+      invalidatesTags: ["Categories"],
+    }),
+    updateBudget: builder.mutation<
+      categoriesResponse1,
+      Partial<categoriesBody>
+    >({
+      query: (data) => {
+        console.log(data);
+        const { id } = data;
+        return {
+          url: `/categories/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Categories"],
+    }),
+    deleteBudget: builder.mutation<
+      Pick<categoriesResponse1, "message">,
+      categoriesResponse1["data"]["id"]
+    >({
+      query: (id) => {
+        return {
+          url: `/categories/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Categories"],
     }),
   }),
 });
 
-export const { useGetCategoriesQuery } = categoryApis;
+export const {
+  useGetCategoriesQuery,
+  useAddBudgetMutation,
+  useUpdateBudgetMutation,
+  useDeleteBudgetMutation,
+} = categoryApis;

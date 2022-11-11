@@ -7,7 +7,7 @@ interface props {
 const Auth: React.FC<props> = ({ children }) => {
   return (
     <div className="flex gap-4 h-screen bg-primary-50">
-      <div className="bg-secondary-background-3 basis-5/12 flex items-center justify-center">
+      <div className="bg-secondary-background-3 basis-8/12 flex items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="445.56323"
@@ -188,9 +188,7 @@ const Auth: React.FC<props> = ({ children }) => {
           </g>
         </svg>
       </div>
-      <div className="overflow-auto basis-7/12 px-16 py-16 auth">
-        {children}
-      </div>
+      <div className="overflow-auto basis-4/12 px-8 py-16 auth">{children}</div>
     </div>
   );
 };

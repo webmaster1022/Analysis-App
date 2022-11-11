@@ -5,9 +5,10 @@ import { Sidenav } from "../Sidenav/Sidenav";
 
 interface props {
   children: JSX.Element;
+  title?: string;
 }
 
-const Dashboard: React.FC<props> = ({ children }) => {
+const Dashboard: React.FC<props> = ({ children, title }) => {
   return (
     <div className="flex flex-row min-h-screen bg-secondary-background-3">
       <aside className="bg-primary-50 w-32 overflow-y-auto z-10 drop-shadow-sm">
@@ -194,7 +195,7 @@ const Dashboard: React.FC<props> = ({ children }) => {
           </li>
         </ul>
       </aside>
-      <main className="flex flex-col grow">{children}</main>
+      <main className={`flex flex-col grow ${title}`}>{children}</main>
     </div>
   );
 };

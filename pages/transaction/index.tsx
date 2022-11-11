@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Auth from "../../components/Layout/Auth";
 import Link from "next/link";
-import { Empty, Select, Skeleton } from "antd";
+import { DatePicker, DatePickerProps, Empty, Select, Skeleton } from "antd";
 import { Button } from "../../components/Button/Button";
 import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
@@ -64,7 +64,7 @@ export interface categoryTypes {
 
 const Transaction: NextPage = () => {
   const [form] = Form.useForm();
-  const [currentDate, setcurrentDate] = useState(
+  const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
   const [isFilterVisible, setFilterVisible] = useState(false);
@@ -231,8 +231,17 @@ const Transaction: NextPage = () => {
       console.log(error);
     }
   };
+
+  const onChangeDateHandler: DatePickerProps["onChange"] = (
+    value,
+    dateString
+  ) => {
+    setCurrentDate(`${dateString}-05`);
+    console.log(value, dateString);
+  };
+
   return (
-    <Dashboard>
+    <Dashboard title={"transaction"}>
       <>
         <Modal
           isVisible={isAddTransactionVisible}
@@ -242,7 +251,7 @@ const Transaction: NextPage = () => {
         >
           <>
             <div className="modal-header flex justify-between items-center py-6 px-12 border-b border-typography-100">
-              <h1 className="text-2xl font-semibold">Filter</h1>
+              <h1 className="text-2xl font-semibold">Add Transaction</h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-5 cursor-pointer"
@@ -521,16 +530,14 @@ const Transaction: NextPage = () => {
               </div>
             </Form>
             <div className="flex gap-6">
-              <FormControl
-                element="date"
+              <DatePicker
                 name="date"
                 placeholder="2022-01"
-                classes={["flex-1"]}
                 picker={"month"}
                 defaultValue={moment(currentDate)}
-                rules={[{ required: true, message: "Please input date" }]}
+                onChange={onChangeDateHandler}
               />
-              <Button
+              {/* <Button
                 type="button"
                 classes="p-2 flex gap-2"
                 onClick={handleFilterToggle}
@@ -552,7 +559,7 @@ const Transaction: NextPage = () => {
                   </svg>
                   <span className="font-semibold">Filter</span>
                 </>
-              </Button>
+              </Button> */}
 
               <Button
                 type="button"
