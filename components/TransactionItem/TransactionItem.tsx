@@ -13,7 +13,7 @@ interface props {
   transaction_type?: string;
   handleForm: () => void;
   toggle?: () => void;
-  handleDelete: (id: number) => void;
+  handleDelete: (id?: number) => void;
   toggleDeleteConfirm: () => void;
   isDeleteConfirmVisible: boolean;
 }
