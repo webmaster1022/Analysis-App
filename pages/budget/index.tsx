@@ -24,6 +24,7 @@ import { ToastRender } from "../../utils/toast";
 import omit from "lodash.omit";
 import { useLazyGetTransactionTypesQuery } from "../../utils/apis/transactionTypes";
 import moment from "moment";
+import jwt from "jsonwebtoken";
 
 const { Option } = Select;
 
@@ -84,13 +85,15 @@ const Budget: NextPage = (props) => {
   console.log(props);
   const [form] = Form.useForm();
   const { Panel } = Collapse;
+  const token = localStorage.getItem("_expense_tracker_tkn_");
+  const user: any = jwt.decode(token as string);
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [isAddBudgetVisible, setAddBudgetVisible] = useState(false);
   const [addBudgetMode, setAddBudgetMode] = useState<string | undefined>();
   const [triggerTypes, { data: transactionTypes }] =
     useLazyGetTransactionTypesQuery();
   const { data: categories, isLoading: isCategoriesLoading } =
-    useGetCategoriesQuery();
+    useGetCategoriesQuery({ user: user?.id });
 
   const [addBudget] = useAddBudgetMutation();
 

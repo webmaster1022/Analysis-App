@@ -80,7 +80,47 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Chart.js Horizontal Bar Chart",
+      text: "Transaction analytics",
+    },
+  },
+};
+
+export const WalletOptions = {
+  maintainAspectRatio: false,
+  indexAxis: "x" as const,
+  elements: {
+    bar: {
+      borderWidth: 2,
+    },
+  },
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+    title: {
+      display: true,
+      text: "Wallet analytics",
+    },
+  },
+};
+
+export const ExpenseOptions = {
+  maintainAspectRatio: false,
+  indexAxis: "x" as const,
+  elements: {
+    bar: {
+      borderWidth: 2,
+    },
+  },
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+    title: {
+      display: true,
+      text: "Expense analytics",
     },
   },
 };
@@ -395,7 +435,7 @@ const Home: NextPage = () => {
                         },
                       ],
                     }}
-                    options={options}
+                    options={WalletOptions}
                   />
                 )}
               </div>
@@ -422,7 +462,7 @@ const Home: NextPage = () => {
                         },
                       ],
                     }}
-                    options={options}
+                    options={ExpenseOptions}
                   />
                 )}
               </div>

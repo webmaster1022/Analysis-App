@@ -10,15 +10,17 @@ import { baseApi } from "../baseUrl";
 
 export const categoryApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCategories: builder.query<categoriesResponse["data"], void>({
-      query: () => {
-        // const queries = QueryString.stringify(arg, {
-        //   encodeValuesOnly: true,
-        // });
-        return `/categories`;
-      },
-      providesTags: ["Categories"],
-    }),
+    getCategories: builder.query<categoriesResponse["data"], categoriesQueries>(
+      {
+        query: (arg) => {
+          const queries = QueryString.stringify(arg, {
+            encodeValuesOnly: true,
+          });
+          return `/categories?${queries}`;
+        },
+        providesTags: ["Categories"],
+      }
+    ),
     addBudget: builder.mutation<categoriesResponse1, categoriesBody>({
       query: (budget) => {
         return {

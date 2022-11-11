@@ -577,7 +577,7 @@ const Transaction: NextPage = () => {
         </Navbar>
         <div className="flex justify-between items-center px-6 py-6">
           <h1 className="text-2xl font-semibold">Transactions</h1>
-          <div className="flex gap-8">
+          {/* <div className="flex gap-8">
             <div className="flex flex-col">
               <h4 className="text-xl font-semibold">33</h4>
               <h6 className="text-sm text-typography-300 font-semibold">
@@ -601,8 +601,8 @@ const Transaction: NextPage = () => {
               <h6 className="text-sm text-typography-300 font-semibold">
                 Total Expense
               </h6>
-            </div>
-          </div>
+            </div> 
+          </div>*/}
         </div>
         <div className="flex px-6 py-6 gap-12">
           <div className="flex-1 grow">
