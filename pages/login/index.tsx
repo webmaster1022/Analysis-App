@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import jwt from "jsonwebtoken";
 import Auth from "../../components/Layout/Auth";
 import Link from "next/link";
 import { Button } from "../../components/Button/Button";
@@ -6,7 +7,10 @@ import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
 import * as Yup from "yup";
 import { NextPage } from "next";
-import { useLoginMutation } from "../../utils/apis/auth";
+import {
+  useGoogleLoginMutation,
+  useLoginMutation,
+} from "../../utils/apis/auth";
 import { login } from "../../utils/models";
 import { ToastRender } from "../../utils/toast";
 import WithPublicRoute from "../../components/HOC/WithPublicRoute";
@@ -28,6 +32,14 @@ const Login: NextPage = () => {
   const initialValues: formValues = { email: "", password: "" };
   const [login, { data: loginResponse, error: loginError }] =
     useLoginMutation();
+
+  const [googleLogin] = useGoogleLoginMutation();
+
+  useEffect(() => {
+    const { id_token } = router.query;
+    const user = jwt.decode(id_token as string);
+    console.log(user);
+  }, []);
 
   const validationSchema = {
     email: {

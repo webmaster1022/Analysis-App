@@ -36,7 +36,19 @@ export const authApis = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Auth"],
     }),
+    googleLogin: builder.mutation<any, login["email"]>({
+      query: (data) => {
+        console.log(data);
+        return {
+          url: `/auth/google`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation } = authApis;
+export const { useLoginMutation, useGoogleLoginMutation, useSignupMutation } =
+  authApis;
