@@ -13,6 +13,7 @@ import WithPublicRoute from "../../components/HOC/WithPublicRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "../../redux/slices/auth.slice";
 import { RootState } from "../../app/store";
+import { useRouter } from "next/router";
 
 interface formValues {
   email: string;
@@ -20,6 +21,8 @@ interface formValues {
 }
 
 const Login: NextPage = () => {
+  const router = useRouter();
+  console.log(router);
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const initialValues: formValues = { email: "", password: "" };
