@@ -167,7 +167,7 @@ const Transaction: NextPage = () => {
     return setAddTransactionVisible(val);
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id?: number) => {
     try {
       const result = await deleteTransaction(id).unwrap();
       setDeleteConfirmVisible(false);
