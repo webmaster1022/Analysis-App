@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Auth from "../../components/Layout/Auth";
 import Link from "next/link";
-import { DatePicker, DatePickerProps, Empty, Select, Skeleton } from "antd";
+import {
+  DatePicker,
+  DatePickerProps,
+  Empty,
+  Input,
+  Select,
+  Skeleton,
+} from "antd";
 import { Button } from "../../components/Button/Button";
 import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
@@ -16,6 +23,7 @@ import {
   useAddTransactionMutation,
   useDeleteTransactionMutation,
   useGetTransactionsQuery,
+  useLazyGetTransactionsQuery,
   useUpdateTransactionMutation,
 } from "../../utils/apis/transaction";
 import { useLazyGetTransactionTypesQuery } from "../../utils/apis/transactionTypes";
@@ -67,6 +75,7 @@ const Transaction: NextPage = () => {
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+  const [search, setSearch] = useState<searchValues["search"]>("");
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [isAddTransactionVisible, setAddTransactionVisible] = useState(false);
   const [addTransaactionMode, setAddTransaactionMode] = useState<
@@ -75,7 +84,6 @@ const Transaction: NextPage = () => {
   const [categories, setCategories] = useState<categoryTypes[]>();
   const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [categoryDefaultValue, setCategoryDefaultValue] = useState("");
-  const searchInitValues: searchValues = { search: "" };
   const filterInitValues: filterValues = {
     wallet: "",
     transaction: "",
@@ -96,6 +104,7 @@ const Transaction: NextPage = () => {
     useGetTransactionsQuery({
       dateFrom: moment(currentDate).startOf("month").format("YYYY-MM-DD"),
       dateTo: moment(currentDate).endOf("month").format("YYYY-MM-DD"),
+      search,
     });
   const [triggerWallets, { data: wallets }] = useLazyGetWalletsQuery();
 
@@ -230,6 +239,11 @@ const Transaction: NextPage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const onSearchHandler = (el: any) => {
+    console.log(el.target.value);
+    setSearch(el.target.value);
   };
 
   const onChangeDateHandler: DatePickerProps["onChange"] = (
@@ -476,14 +490,31 @@ const Transaction: NextPage = () => {
         </Modal>
         <Navbar classes={"transaction"}>
           <>
-            <Form
-              layout="vertical"
-              initialValues={searchInitValues}
-              autoComplete="off"
-              className="search-form"
-            >
-              <div className="relative">
-                <div className="flex absolute inset-y-0 left-0 items-center pl-0 pointer-events-none">
+            <div className="relative search-input">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-0 pointer-events-none">
+                <svg
+                  aria-hidden="true"
+                  className="w-5 text-typography-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  ></path>
+                </svg>
+              </div>
+              <Input
+                type="text"
+                name="search"
+                placeholder="Search Income, Expense..."
+                onChange={(el: any) => onSearchHandler(el)}
+                className="block p-2 text-sm text-typography-900 rounded flex"
+                prefix={
                   <svg
                     aria-hidden="true"
                     className="w-5 text-typography-300"
@@ -499,36 +530,9 @@ const Transaction: NextPage = () => {
                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     ></path>
                   </svg>
-                </div>
-                <FormControl
-                  type="text"
-                  element="search-input"
-                  name="search"
-                  placeholder="Search Income, Expense..."
-                  classes={[
-                    "",
-                    "block p-2 text-sm text-typography-900 rounded flex",
-                  ]}
-                  prefix={
-                    <svg
-                      aria-hidden="true"
-                      className="w-5 text-typography-300"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      ></path>
-                    </svg>
-                  }
-                />
-              </div>
-            </Form>
+                }
+              />
+            </div>
             <div className="flex gap-6">
               <DatePicker
                 name="date"

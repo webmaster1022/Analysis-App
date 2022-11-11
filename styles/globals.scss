@@ -83,9 +83,10 @@ input {
   }
 }
 
-.search-form {
+.search-input {
   .ant-input {
     background-color: transparent;
+    border: 0;
   }
   .ant-form-item {
     margin: 0;

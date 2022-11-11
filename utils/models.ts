@@ -71,8 +71,9 @@ export interface transactionResponse {
 }
 
 export interface transactionQueries {
-  dateFrom: string;
-  dateTo: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
 }
 
 export interface Wallet {
@@ -143,7 +144,7 @@ export interface AnalyticsResponse {
 export interface analyticsQueries {
   dateFrom: string;
   dateTo: string;
-  type: string;
+  type: "time" | "date" | "month" | "year" | "week" | "quarter" | undefined;
 }
 
 export interface categoriesResponse {

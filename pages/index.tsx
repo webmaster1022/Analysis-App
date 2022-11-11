@@ -1,5 +1,6 @@
-import { Skeleton, Select } from "antd";
+import { Skeleton, Select, DatePicker, DatePickerProps } from "antd";
 import omit from "lodash.omit";
+import moment, { Moment } from "moment";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
@@ -85,11 +86,29 @@ export const options = {
 };
 
 const Home: NextPage = () => {
+  const [dateType, setDateType] = useState<
+    "time" | "date" | "month" | "year" | "week" | "quarter" | undefined
+  >("month");
+  const [dateFrom, setDateFrom] = useState(
+    moment(new Date().toISOString().slice(0, 10))
+      .startOf("month")
+      .format("YYYY-MM-DD")
+  );
+  const [dateTo, setDateTo] = useState(
+    moment(new Date().toISOString().slice(0, 10))
+      .endOf("month")
+      .format("YYYY-MM-DD")
+  );
+  console.log(dateFrom);
+  console.log(dateTo);
   const { data: analytics, isLoading: isAnalyticsLoading } =
     useGetAnalyticsQuery({
-      dateFrom: "2022-09-05",
-      dateTo: "2022-10-20",
-      type: "month",
+      dateFrom: moment(dateFrom)
+        .subtract(1, "months")
+        .endOf("month")
+        .format("YYYY-MM-DD"),
+      dateTo,
+      type: dateType,
     });
   console.log(analytics);
   console.log(isAnalyticsLoading);
@@ -155,38 +174,49 @@ const Home: NextPage = () => {
   //     },
   //   ],
   // });
+  const dateFromHandler: DatePickerProps["onChange"] = (
+    value,
+    dateString: string
+  ) => {
+    setDateFrom(
+      moment(`${dateString}-05`).startOf("month").format("YYYY-MM-DD")
+    );
+  };
+
+  const dateToHandler: DatePickerProps["onChange"] = (
+    value,
+    dateString: string
+  ) => {
+    setDateTo(moment(`${dateString}-05`).endOf("month").format("YYYY-MM-DD"));
+  };
   return (
-    <Dashboard>
+    <Dashboard title="analytics">
       <>
         <Navbar>
           <div className="filter-date flex gap-6 ml-auto">
-            <FormControl
-              element="select"
-              name="filterRangeDate"
-              classes={[""]}
-              defaultValue={"day"}
-            >
+            <Select defaultValue={"month"}>
               <>
-                {["date", "month", "year"].map((t: string) => (
+                {["custom", "month", "year"].map((t: string) => (
                   <Option key={t} value={t}>
                     {t}
                   </Option>
                 ))}
               </>
-            </FormControl>
-            <FormControl
-              element="date"
-              name="date"
+            </Select>
+            <DatePicker
+              name="dateFrom"
               placeholder="2022-01-01"
-              classes={["flex-1"]}
-              rules={[{ required: true, message: "Please input date" }]}
+              className="flex-1"
+              picker={dateType}
+              value={moment(dateFrom)}
+              onChange={dateFromHandler}
             />
-            <FormControl
-              element="date"
-              name="date"
+            <DatePicker
+              name="dateTo"
               placeholder="2022-01-01"
-              classes={["flex-1"]}
-              rules={[{ required: true, message: "Please input date" }]}
+              className="flex-1"
+              disabled={dateType !== "date" ? true : false}
+              onChange={dateToHandler}
             />
           </div>
         </Navbar>
