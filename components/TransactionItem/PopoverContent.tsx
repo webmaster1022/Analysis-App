@@ -7,7 +7,7 @@ import { Popconfirm } from "antd";
 interface props {
   toggle?: () => void;
   edit: (data: transactionResponse1["data"], mode: string) => void;
-  deleteItem: (id: number) => void;
+  deleteItem: (id?: number) => void;
   data: transactionResponse1["data"];
   deleteText?: string;
 }
