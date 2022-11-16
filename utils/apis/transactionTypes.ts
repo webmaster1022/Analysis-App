@@ -7,15 +7,16 @@ type transactionsQueries = {
   populate: string[];
 };
 
-type getTransactionTypeCategoriesQueries = {
-  populate: string;
-};
+export interface transactionTypeCategoriesQueries {
+  user?: number;
+}
+[];
 
 export const transactionTypesApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTransactionTypes: builder.query<
       TransactionType[],
-      getTransactionTypeCategoriesQueries
+      transactionTypeCategoriesQueries
     >({
       query: (arg) => {
         const queries = QueryString.stringify(arg, {
@@ -23,8 +24,7 @@ export const transactionTypesApis = baseApi.injectEndpoints({
         });
         return `/transaction-types?${queries}`;
       },
-      transformResponse: (response: { data: TransactionType[] }, meta, arg) =>
-        response.data,
+      transformResponse: (response: TransactionType[], meta, arg) => response,
       providesTags: ["Transaction-types"],
     }),
   }),

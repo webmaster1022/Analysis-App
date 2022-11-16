@@ -39,6 +39,7 @@ import { ToastRender } from "../../utils/toast";
 import moment from "moment";
 import WithPrivateRoute from "../../components/HOC/WithPrivateRoute";
 import omit from "lodash.omit";
+import jwt from "jsonwebtoken";
 
 const { Option } = Select;
 
@@ -62,16 +63,16 @@ interface addTransactionValues {
 }
 export interface categoryTypes {
   id: number;
-  attributes: {
-    name: string;
-    createdAt: string;
-    publishedAt: string;
-    updatedAt: string;
-  };
+  name: string;
+  createdAt: string;
+  publishedAt: string;
+  updatedAt: string;
 }
 
 const Transaction: NextPage = () => {
   const [form] = Form.useForm();
+  const token = localStorage.getItem("_expense_tracker_tkn_");
+  const user: any = jwt.decode(token as string);
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -144,7 +145,7 @@ const Transaction: NextPage = () => {
     setAddTransaactionMode(mode);
     if (val) {
       triggerWallets();
-      triggerTypes({ populate: "*" });
+      triggerTypes({ user: user?.id });
       console.log(data);
       if (data) {
         for (const property of Object.keys(addTransactionInitValues)) {
@@ -187,14 +188,13 @@ const Transaction: NextPage = () => {
   };
 
   const transactionSelectionHandler = (value: string) => {
-    const result = transactionTypes?.filter(
-      (t) => t.attributes.name == value
-    )[0].attributes.categories.data;
+    const result = transactionTypes?.filter((t) => t.name == value)[0]
+      .categories;
     form.setFieldsValue({ transaction_type: value });
     if (result) {
       setCategories(result);
       form.setFieldsValue({
-        category: result[0].attributes.name,
+        category: result[0].name,
       });
     }
   };
@@ -326,8 +326,8 @@ const Transaction: NextPage = () => {
                 >
                   <>
                     {transactionTypes?.map((t) => (
-                      <Option key={t.id} value={t.attributes.name}>
-                        {t.attributes.name}
+                      <Option key={t.id} value={t.name}>
+                        {t.name}
                       </Option>
                     ))}
                   </>
@@ -346,8 +346,8 @@ const Transaction: NextPage = () => {
                   <>
                     {categories &&
                       categories.map((c) => (
-                        <Option key={c.id} value={c.attributes.name}>
-                          {c.attributes.name}
+                        <Option key={c.id} value={c.name}>
+                          {c.name}
                         </Option>
                       ))}
                   </>

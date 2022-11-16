@@ -11,7 +11,6 @@ interface props {
 
 const Dashboard: React.FC<props> = ({ children, title }) => {
   const handleLogout = () => {
-    localStorage.removeItem("_expense_tracker_tkn_");
     Router.push("/login");
   };
   return (

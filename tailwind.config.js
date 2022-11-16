@@ -15,9 +15,9 @@ module.exports = {
       secondary: {
         1: "#63B5F7",
         2: "#7240FF",
-        3: "#4FA153",
+        3: "#14b8a6",
         hover: {
-          3: "#5E9261",
+          3: "#0d9488",
         },
         background: {
           3: "#F3F7F3",

@@ -87,22 +87,16 @@ export interface Wallet {
 
 export interface TransactionType {
   id: number;
-  attributes: {
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  categories?: {
+    id: number;
     name: string;
     createdAt: string;
+    publishedAt: string;
     updatedAt: string;
-    categories: {
-      data: {
-        id: number;
-        attributes: {
-          name: string;
-          createdAt: string;
-          publishedAt: string;
-          updatedAt: string;
-        };
-      }[];
-    };
-  };
+  }[];
 }
 
 export interface Wallet {

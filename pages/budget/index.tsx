@@ -241,7 +241,7 @@ const Budget: NextPage = (props) => {
     console.log(mode);
     setAddBudgetMode(mode);
     if (val) {
-      triggerTypes({ populate: "*" });
+      triggerTypes({ user: 0 });
       console.log(data);
       if (data) {
         for (const property of Object.keys(addBudgetInitValues)) {
@@ -302,7 +302,6 @@ const Budget: NextPage = (props) => {
       ToastRender(error.message, true);
     }
   };
-
   return (
     <Dashboard title={"budget"}>
       <>
@@ -366,7 +365,7 @@ const Budget: NextPage = (props) => {
                   <>
                     {transactionTypes?.map((t) => (
                       <Option key={t.id} value={t.id}>
-                        {t.attributes.name}
+                        {t.name}
                       </Option>
                     ))}
                   </>

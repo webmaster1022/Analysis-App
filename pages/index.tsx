@@ -143,10 +143,7 @@ const Home: NextPage = () => {
   console.log(dateTo);
   const { data: analytics, isLoading: isAnalyticsLoading } =
     useGetAnalyticsQuery({
-      dateFrom: moment(dateFrom)
-        .subtract(1, "months")
-        .endOf("month")
-        .format("YYYY-MM-DD"),
+      dateFrom: moment(dateFrom).startOf("month").format("YYYY-MM-DD"),
       dateTo,
       type: dateType,
     });
@@ -214,6 +211,21 @@ const Home: NextPage = () => {
   //     },
   //   ],
   // });
+  const handleDateTypeSelection = (
+    value: "time" | "date" | "month" | "year" | "week" | "quarter" | undefined
+  ) => {
+    setDateType(value);
+    setDateFrom(
+      moment(new Date().toISOString().slice(0, 10))
+        .startOf(`${value}` as any)
+        .format("YYYY-MM-DD")
+    );
+    setDateTo(
+      moment(new Date().toISOString().slice(0, 10))
+        .endOf(`${value}` as any)
+        .format("YYYY-MM-DD")
+    );
+  };
   const dateFromHandler: DatePickerProps["onChange"] = (
     value,
     dateString: string
@@ -222,21 +234,14 @@ const Home: NextPage = () => {
       moment(`${dateString}-05`).startOf("month").format("YYYY-MM-DD")
     );
   };
-
-  const dateToHandler: DatePickerProps["onChange"] = (
-    value,
-    dateString: string
-  ) => {
-    setDateTo(moment(`${dateString}-05`).endOf("month").format("YYYY-MM-DD"));
-  };
   return (
     <Dashboard title="analytics">
       <>
         <Navbar>
           <div className="filter-date flex gap-6 ml-auto">
-            <Select defaultValue={"month"}>
+            <Select defaultValue={"month"} onChange={handleDateTypeSelection}>
               <>
-                {["custom", "month", "year"].map((t: string) => (
+                {["month", "year"].map((t: string) => (
                   <Option key={t} value={t}>
                     {t}
                   </Option>
@@ -251,38 +256,32 @@ const Home: NextPage = () => {
               value={moment(dateFrom)}
               onChange={dateFromHandler}
             />
-            <DatePicker
-              name="dateTo"
-              placeholder="2022-01-01"
-              className="flex-1"
-              disabled={dateType !== "date" ? true : false}
-              onChange={dateToHandler}
-            />
           </div>
         </Navbar>
         <div className="flex px-6 py-6">
           <div className="flex flex-col gap-8 basis-4/6">
             <div className="flex flex-wrap gap-4">
               <div className="relative basis-1/3 flex-1 flex flex-col min-w-0 break-words shadow-soft-xl rounded bg-primary-50">
-                <div className="flex-auto p-4">
-                  <div className="flex flex-wrap -mx-3">
-                    <div className="flex-none w-2/3 max-w-full px-3">
-                      <div>
-                        <p className="mb-0 font-sans font-semibold leading-normal text-sm">
-                          Net Income
-                        </p>
-                        <h5 className="mb-0 font-bold">
-                          {analytics?.data.transactionsTypesTotal.income} RFW
-                        </h5>
-                      </div>
+                <div className="flex flex-wrap px-4 py-4 h-full w-full">
+                  <div className="flex flex-col w-2/3 max-w-full gap-3">
+                    <div className="flex flex-col">
+                      <p className="mb-0 font-sans font-semibold leading-normal text-sm">
+                        Net Income
+                      </p>
+                      <h5 className="mb-0 font-bold">
+                        {analytics?.data.transactionsTypesTotal.income} RFW
+                      </h5>
                     </div>
-                    <div className="w-4/12 max-w-full px-3 ml-auto text-right flex-0">
-                      <div className="inline-block w-12 h-12 text-center rounded bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl">
-                        <i
-                          className="ni ni-money-coins text-lg relative top-3.5 text-white"
-                          aria-hidden="true"
-                        ></i>
-                      </div>
+                    <h5 className="mb-0 font-bold">
+                      {analytics?.data.transactionsTypesTotal.income} RFW
+                    </h5>
+                  </div>
+                  <div className="w-4/12 max-w-full px-3 ml-auto text-right flex-0">
+                    <div className="inline-block w-12 h-12 text-center rounded bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl">
+                      <i
+                        className="ni ni-money-coins text-lg relative top-3.5 text-white"
+                        aria-hidden="true"
+                      ></i>
                     </div>
                   </div>
                 </div>
@@ -398,8 +397,8 @@ const Home: NextPage = () => {
                           data: analytics?.data.transactionsAnalytics.map(
                             (data) => data.expense
                           ),
-                          backgroundColor: ["#4FA153"],
-                          borderColor: "#4FA153",
+                          backgroundColor: ["#14b8a6"],
+                          borderColor: "#14b8a6",
                           borderWidth: 1,
                         },
                       ],
@@ -429,8 +428,8 @@ const Home: NextPage = () => {
                             analytics?.data
                               .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
                           ),
-                          backgroundColor: ["#63B5F7", "#7240FF", "#4FA153"],
-                          borderColor: ["#63B5F7", "#7240FF", "#4FA153"],
+                          backgroundColor: ["#63B5F7", "#7240FF", "#14b8a6"],
+                          borderColor: ["#63B5F7", "#7240FF", "#14b8a6"],
                           borderWidth: 1,
                         },
                       ],
