@@ -12,6 +12,7 @@ export interface transactionResponse1 {
     updatedAt: string;
     wallet: string;
     transaction_type: string;
+    users_id: number;
   };
 }
 
@@ -74,6 +75,7 @@ export interface transactionQueries {
   dateFrom?: string;
   dateTo?: string;
   search?: string;
+  user: number;
 }
 
 export interface Wallet {
@@ -139,6 +141,7 @@ export interface analyticsQueries {
   dateFrom: string;
   dateTo: string;
   type: "time" | "date" | "month" | "year" | "week" | "quarter" | undefined;
+  user: number;
 }
 
 export interface categoriesResponse {
@@ -186,6 +189,7 @@ export interface categoriesBody {
   publishedAt: string;
   budget: number | null;
   transaction_type: number;
+  users_permissions_user: number;
 }
 
 export interface categoriesQueries {

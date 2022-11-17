@@ -106,6 +106,7 @@ const Transaction: NextPage = () => {
       dateFrom: moment(currentDate).startOf("month").format("YYYY-MM-DD"),
       dateTo: moment(currentDate).endOf("month").format("YYYY-MM-DD"),
       search,
+      user: user?.id,
     });
   const [triggerWallets, { data: wallets }] = useLazyGetWalletsQuery();
 
@@ -194,7 +195,7 @@ const Transaction: NextPage = () => {
     if (result) {
       setCategories(result);
       form.setFieldsValue({
-        category: result[0].name,
+        category: result[0] ? result[0].name : null,
       });
     }
   };
@@ -228,7 +229,7 @@ const Transaction: NextPage = () => {
       } else {
         console.log("add");
         values = omit(values, ["id"]);
-        await addTransaction(values)
+        await addTransaction({ ...values, users_id: user?.id })
           .unwrap()
           .then((payload) => {
             form.resetFields();

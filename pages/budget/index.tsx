@@ -278,7 +278,7 @@ const Budget: NextPage = (props) => {
       } else {
         console.log("add");
         values = omit(values, ["id"]);
-        await addBudget(values)
+        await addBudget({ ...values, users_permissions_user: user.id })
           .unwrap()
           .then((payload) => {
             form.resetFields();
