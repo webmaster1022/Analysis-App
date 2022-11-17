@@ -34,13 +34,15 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
 
   useEffect(() => {
     getCategories({ user: user?.id });
-    if (categories && categories.length <= 0) {
+    const loggedIn = localStorage.getItem(`${user.id}`);
+    if (categories && categories.length <= 0 && !loggedIn) {
       handleWelcomeModalToggle();
     }
   }, [categories]);
 
   const handleWelcomeModalToggle = async () => {
     const val = !isWelcomeModalVisible;
+    localStorage.setItem(`${user.id}`, "true");
     return setWelcomeModalVisible(val);
   };
   const handleLogout = async () => {
