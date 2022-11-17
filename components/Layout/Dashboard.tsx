@@ -1,6 +1,11 @@
 import Link from "next/link";
+import router from "next/router";
 import Router from "next/router";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { removeCredentials } from "../../redux/slices/auth.slice";
+import { useLazyLogoutQuery } from "../../utils/apis/auth";
+import { baseApi } from "../../utils/baseUrl";
 import { Navbar } from "../Navbar/Navbar";
 import { Sidenav } from "../Sidenav/Sidenav";
 
@@ -10,8 +15,17 @@ interface props {
 }
 
 const Dashboard: React.FC<props> = ({ children, title }) => {
-  const handleLogout = () => {
-    Router.push("/login");
+  const dispatch = useDispatch();
+  const [triggerLogout] = useLazyLogoutQuery();
+  const handleLogout = async () => {
+    try {
+      await triggerLogout();
+      dispatch(removeCredentials());
+      dispatch(baseApi.util.resetApiState());
+      router.replace("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="flex flex-row min-h-screen bg-secondary-background-3">

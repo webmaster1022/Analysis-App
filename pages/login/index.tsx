@@ -26,7 +26,10 @@ interface formValues {
 
 const Login: NextPage = () => {
   const router = useRouter();
-  console.log(router);
+  const path = router.asPath;
+  // console.log("-----");
+  // console.log(router);
+  // console.log("-----");
   const dispatch = useDispatch();
   const [form] = Form.useForm();
   const initialValues: formValues = { email: "", password: "" };
@@ -36,10 +39,13 @@ const Login: NextPage = () => {
   const [googleLogin] = useGoogleLoginMutation();
 
   useEffect(() => {
-    const { id_token } = router.query;
-    const user = jwt.decode(id_token as string);
-    console.log(user);
-  }, []);
+    const path = router.asPath;
+    console.log("---");
+    console.log(path);
+    console.log("------");
+    // const user = jwt.decode(id_token as string);
+    // console.log(user);
+  }, [router.asPath]);
 
   const validationSchema = {
     email: {

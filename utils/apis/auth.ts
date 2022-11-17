@@ -47,8 +47,21 @@ export const authApis = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Auth"],
     }),
+    logout: builder.query<any, void>({
+      query: () => {
+        return {
+          url: `/auth/logout`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Auth"],
+    }),
   }),
 });
 
-export const { useLoginMutation, useGoogleLoginMutation, useSignupMutation } =
-  authApis;
+export const {
+  useLoginMutation,
+  useGoogleLoginMutation,
+  useSignupMutation,
+  useLazyLogoutQuery,
+} = authApis;
