@@ -12,7 +12,7 @@ export const Sidenav: React.FC<props> = ({ link, classes, children }) => {
   return (
     <Link href={link}>
       <a
-        className={`group flex flex-col items-center py-2 transition hover:bg-secondary-background-3 hover:duration-150 ${classes}`}
+        className={`group flex flex-col items-center py-2 transition hover:bg-primary/5 hover:duration-250 ease-in-out ${classes}`}
       >
         {children}
       </a>

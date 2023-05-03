@@ -9,20 +9,11 @@ module.exports = {
       mont: ["Montserrat"],
     },
     colors: {
-      primary: {
-        50: "#FFF",
-      },
-      secondary: {
-        1: "#63B5F7",
-        2: "#7240FF",
-        3: "#14b8a6",
-        hover: {
-          3: "#0d9488",
-        },
-        background: {
-          3: "#F3F7F3",
-        },
-      },
+      primary: "#02A7C3",
+      secondary: "#F0F9FB",
+      white: "#FFF",
+      income: "#6366f1",
+      debt: "#f59e0b",
       light: {
         1: "#fafafa",
       },

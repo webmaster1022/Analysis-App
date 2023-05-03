@@ -25,7 +25,7 @@ export const Input: React.FC<props> = ({
     >
       <Field
         {...rest}
-        className={`bg-primary-50 border border-typography-300 text-typography-900 text-sm rounded focus:outline-none focus:border-secondary-3 focus:shadow-none hover:border-secondary-3 w-full ${
+        className={`border text-typography-900 text-sm rounded focus:outline-none focus:shadow-none w-full ${
           classes[1] ? classes[1] : ""
         }`}
       />

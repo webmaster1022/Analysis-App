@@ -6,8 +6,8 @@ interface props {
 
 const Auth: React.FC<props> = ({ children }) => {
   return (
-    <div className="flex gap-4 h-screen bg-primary-50">
-      <div className="bg-secondary-background-3 basis-8/12 flex items-center justify-center">
+    <div className="flex gap-4 h-screen bg-white">
+      <div className="bg-secondary basis-8/12 flex items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="445.56323"

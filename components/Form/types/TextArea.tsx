@@ -25,7 +25,7 @@ export const TextArea: React.FC<props> = ({
     >
       <Field.TextArea
         {...rest}
-        className={`bg-primary-50 border border-typography-300 text-typography-900 text-sm rounded focus:outline-none focus:border-secondary-3 focus:shadow-none hover:border-secondary-3 w-full ${classes[1]}`}
+        className={`border text-typography-900 text-sm rounded focus:outline-none focus:shadow-none w-full ${classes[1]}`}
       />
     </Form.Item>
   );

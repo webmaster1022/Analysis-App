@@ -64,11 +64,11 @@ interface DataType {
 const colors = (type: string) => {
   switch (type) {
     case "Income":
-      return "bg-secondary-1 bg-green-100 text-green-800";
+      return "bg-income bg-green-100 text-green-800";
     case "Debt/Loan":
-      return "bg-secondary-2 bg-yellow-100 text-yellow-800";
+      return "bg-debt bg-yellow-100 text-yellow-800";
     case "Expense":
-      return "bg-secondary-3 bg-red-100 text-red-800";
+      return "bg-secondary bg-red-100 text-red-800";
     default:
       return "bg-transparent";
   }
@@ -90,10 +90,17 @@ const Budget: NextPage = (props) => {
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [isAddBudgetVisible, setAddBudgetVisible] = useState(false);
   const [addBudgetMode, setAddBudgetMode] = useState<string | undefined>();
+  const [currentDate, setCurrentDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
   const [triggerTypes, { data: transactionTypes }] =
     useLazyGetTransactionTypesQuery();
   const { data: categories, isLoading: isCategoriesLoading } =
-    useGetCategoriesQuery({ user: user?.id });
+    useGetCategoriesQuery({
+      user: user?.id,
+      dateFrom: moment(currentDate).startOf("month").format("YYYY-MM-DD"),
+      dateTo: moment(currentDate).endOf("month").format("YYYY-MM-DD"),
+    });
 
   const [addBudget] = useAddBudgetMutation();
 
@@ -132,6 +139,20 @@ const Budget: NextPage = (props) => {
     endDate: Yup.date(),
   });
 
+  const categoryColor = (type: string) => {
+    console.log(type);
+    switch (type) {
+      case "Income":
+        return "bg-income/10 text-income";
+        break;
+      case "Debt/Loan":
+        return "bg-debt/10 text-debt";
+        break;
+      default:
+        return "bg-primary/10 text-primary";
+    }
+  };
+
   const columns: ColumnsType<categoriesResponse1["data"]> = [
     {
       title: "Name",
@@ -144,14 +165,25 @@ const Budget: NextPage = (props) => {
       title: "Transaction Type",
       key: "transaction_type",
       dataIndex: "transaction_type",
-      render: (_, { budget }) => (
+      render: (transaction_type, { budget, usedBudget, usedBudgetColor }) => (
         <>
           {budget ? (
-            <span
-              className={`bg-secondary-1 bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded`}
-            >
-              {budget} Rfw
-            </span>
+            <div className="flex gap-6">
+              <p
+                className={`${categoryColor(
+                  transaction_type.name
+                )} text-xs font-normal px-2.5 py-0.5 rounded`}
+              >
+                {budget} Rfw
+              </p>
+              {/* {usedBudget ? (
+                <p
+                  className={`${usedBudgetColor} text-xs font-semibold px-2.5 py-0.5 rounded`}
+                >
+                  {usedBudget} Rfw
+                </p>
+              ) : null} */}
+            </div>
           ) : null}
         </>
       ),
@@ -237,25 +269,26 @@ const Budget: NextPage = (props) => {
     data?: categoriesResponse1["data"],
     mode?: string
   ) => {
-    const val = !isAddBudgetVisible;
     console.log(mode);
     setAddBudgetMode(mode);
-    if (val) {
-      triggerTypes({ user: 0 });
-      console.log(data);
-      if (data) {
-        for (const property of Object.keys(addBudgetInitValues)) {
-          form.setFieldsValue({
-            [property]:
-              property === "transaction_type"
-                ? data["transaction_type"]["id"]
-                : data[`${property as keyof categoriesResponse1["data"]}`],
-          });
-        }
+    triggerTypes({ user: 0 });
+    console.log(data);
+    if (data) {
+      for (const property of Object.keys(addBudgetInitValues)) {
+        form.setFieldsValue({
+          [property]:
+            property === "transaction_type"
+              ? data["transaction_type"]["id"]
+              : data[`${property as keyof categoriesResponse1["data"]}`],
+        });
       }
-      return setAddBudgetVisible(val);
     }
-    return setAddBudgetVisible(val);
+    return setAddBudgetVisible(!isAddBudgetVisible);
+  };
+
+  const handleCancelAddBudgetModal = async () => {
+    form.resetFields();
+    setAddBudgetVisible(!isAddBudgetVisible);
   };
 
   const transactionSelectionHandler = (value: string) => {
@@ -285,11 +318,12 @@ const Budget: NextPage = (props) => {
             ToastRender(payload.message);
           })
           .catch((payload) => {
-            console.log(payload);
-            ToastRender(payload.message, true);
+            const { message } = payload.data.error;
+            console.log(message);
+            ToastRender(message, true);
           });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
     }
   };
@@ -299,7 +333,9 @@ const Budget: NextPage = (props) => {
       const result = await deleteBudget(id).unwrap();
       ToastRender(result.message);
     } catch (error: any) {
-      ToastRender(error.message, true);
+      const { message } = error.data.error;
+      console.log(message);
+      ToastRender(message, true);
     }
   };
   return (
@@ -308,7 +344,7 @@ const Budget: NextPage = (props) => {
         <Modal
           isVisible={isAddBudgetVisible}
           title=""
-          onCancel={handleAddBudgetToggle}
+          onCancel={handleCancelAddBudgetModal}
           width={768}
         >
           <>
@@ -318,7 +354,7 @@ const Budget: NextPage = (props) => {
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-5 cursor-pointer"
                 viewBox="0 0 512 512"
-                onClick={() => handleAddBudgetToggle}
+                onClick={() => handleCancelAddBudgetModal}
               >
                 <path
                   fill="none"
@@ -390,7 +426,7 @@ const Budget: NextPage = (props) => {
               </div>
               <Button
                 type="submit"
-                classes="px-6 self-end text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+                classes="px-6 self-end text-white bg-primary"
               >
                 <>Save</>
               </Button>
@@ -474,7 +510,7 @@ const Budget: NextPage = (props) => {
               </div>
               <Button
                 type="submit"
-                classes="py-2 px-4 self-end text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+                classes="py-2 px-4 self-end text-white bg-primary"
               >
                 <>Apply Filter</>
               </Button>
@@ -492,7 +528,7 @@ const Budget: NextPage = (props) => {
                 <>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="ionicon w-6 text-secondary-3"
+                    className="ionicon w-6 text-secondary"
                     viewBox="0 0 512 512"
                   >
                     <path
@@ -510,7 +546,7 @@ const Budget: NextPage = (props) => {
 
               <Button
                 type="button"
-                classes="py-2 px-4 text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+                classes="py-2 px-4 text-white bg-primary"
                 onClick={() => handleAddBudgetToggle(undefined, "add")}
               >
                 <span>New Budget</span>
@@ -527,7 +563,7 @@ const Budget: NextPage = (props) => {
               <tr>
                 <th
                   scope="col"
-                  className="py-3 px-4 bg-primary-50 dark:bg-gray-800 rounded-l"
+                  className="py-3 px-4 bg-white dark:bg-gray-800 rounded-l"
                   style={{ width: "50%" }}
                 >
                   Budget name
@@ -541,7 +577,7 @@ const Budget: NextPage = (props) => {
                 </th>
                 <th
                   scope="col"
-                  className="py-3 px-4 bg-primary-50 dark:bg-gray-800 rounded-r"
+                  className="py-3 px-4 bg-white dark:bg-gray-800 rounded-r"
                   style={{ width: "20%" }}
                 >
                   Action

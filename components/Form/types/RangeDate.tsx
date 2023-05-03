@@ -31,7 +31,7 @@ export const RangeDate: React.FC<props> = ({
         {...rest}
         name={name}
         picker={picker}
-        className={`bg-primary-50 border border-typography-300 text-typography-900 text-sm rounded focus:outline-none focus:border-secondary-3 focus:shadow-none hover:border-secondary-3 shadow-none w-full ${classes[1]}`}
+        className={`border text-typography-900 text-sm rounded focus:outline-none focus:shadow-none shadow-none w-full ${classes[1]}`}
       />
     </Form.Item>
   );

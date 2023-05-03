@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Auth from "../../components/Layout/Auth";
 import Link from "next/link";
 import {
@@ -40,6 +40,7 @@ import moment from "moment";
 import WithPrivateRoute from "../../components/HOC/WithPrivateRoute";
 import omit from "lodash.omit";
 import jwt from "jsonwebtoken";
+import { disabledDate } from "../../utils/date";
 
 const { Option } = Select;
 
@@ -73,6 +74,7 @@ const Transaction: NextPage = () => {
   const [form] = Form.useForm();
   const token = localStorage.getItem("_expense_tracker_tkn_");
   const user: any = jwt.decode(token as string);
+  const [currentPage, setCurrentPage] = useState(1);
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -85,6 +87,16 @@ const Transaction: NextPage = () => {
   const [categories, setCategories] = useState<categoryTypes[]>();
   const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [categoryDefaultValue, setCategoryDefaultValue] = useState("");
+  // const [transactions, setTransactions] = useState<transactionResponse>();
+  // const [mergedIncome, setMergedIncome] = useState<
+  //   transactionResponse["income"]
+  // >([]);
+  // const [mergedLoan, setMergedLoan] = useState<
+  //   transactionResponse["debt_loan"]
+  // >([]);
+  // const [mergedExpense, setMergedExpense] = useState<
+  //   transactionResponse["expense"]
+  // >([]);
   const filterInitValues: filterValues = {
     wallet: "",
     transaction: "",
@@ -100,14 +112,69 @@ const Transaction: NextPage = () => {
     date: null,
     note: null,
   };
-
   const { data: transactions, isLoading: isTransactionLoading } =
     useGetTransactionsQuery({
       dateFrom: moment(currentDate).startOf("month").format("YYYY-MM-DD"),
       dateTo: moment(currentDate).endOf("month").format("YYYY-MM-DD"),
       search,
       user: user?.id,
+      starter: currentPage * 10,
     });
+
+  // useMemo(() => {
+  //   if (transactionData) {
+  //     setMergedIncome((income) => [...income, ...transactionData.income]);
+  //     setMergedLoan((debt_loan) => [
+  //       ...debt_loan,
+  //       ...transactionData.debt_loan,
+  //     ]);
+  //     setMergedExpense((expense) => [...expense, ...transactionData.expense]);
+  //   }
+  //   setTransactions({
+  //     income: mergedIncome,
+  //     debt_loan: mergedLoan,
+  //     expense: mergedExpense,
+  //   });
+  // }, [transactionData, currentPage]);
+
+  const indexRef = useRef<HTMLDivElement>(null);
+
+  const onIntersection = (entries: any[]) => {
+    const firstEntry = entries[0];
+    if (firstEntry.isIntersecting) {
+      console.log("well");
+      setCurrentPage((page) => page + 1);
+    }
+  };
+
+  useEffect(() => {
+    // const observer = new IntersectionObserver(onIntersection);
+    // if (observer && indexRef.current) {
+    //   observer.observe(indexRef.current);
+    // }
+    // return () => {
+    //   if (observer) {
+    //     observer.disconnect();
+    //   }
+    // };
+    if (indexRef.current) {
+      console.log(indexRef.current.clientHeight);
+    }
+
+    // if (transactionData) {
+    //   setMergedIncome((income) => [...income, ...transactionData.income]);
+    //   setMergedLoan((debt_loan) => [
+    //     ...debt_loan,
+    //     ...transactionData.debt_loan,
+    //   ]);
+    //   setMergedExpense((expense) => [...expense, ...transactionData.expense]);
+    // }
+    // setTransactions({
+    //   income: mergedIncome,
+    //   debt_loan: mergedLoan,
+    //   expense: mergedExpense,
+    // });
+  }, [indexRef, transactions]);
   const [triggerWallets, { data: wallets }] = useLazyGetWalletsQuery();
 
   const [triggerTypes, { data: transactionTypes }] =
@@ -141,32 +208,33 @@ const Transaction: NextPage = () => {
     data?: transactionResponse1,
     mode?: string
   ) => {
-    const val = !isAddTransactionVisible;
     console.log(mode);
     setAddTransaactionMode(mode);
-    if (val) {
-      triggerWallets();
-      triggerTypes({ user: user?.id });
-      console.log(data);
-      if (data) {
-        for (const property of Object.keys(addTransactionInitValues)) {
-          form.setFieldsValue({
-            [property]:
-              property === "date"
-                ? moment(
-                    `${
-                      data[`${property as keyof transactionResponse1}`]
-                        .toString()
-                        .split("T")[0]
-                    }`
-                  )
-                : data[`${property as keyof transactionResponse1}`],
-          });
-        }
+    triggerWallets();
+    triggerTypes({ user: user?.id });
+    console.log(data);
+    if (data) {
+      for (const property of Object.keys(addTransactionInitValues)) {
+        form.setFieldsValue({
+          [property]:
+            property === "date"
+              ? moment(
+                  `${
+                    data[`${property as keyof transactionResponse1}`]
+                      .toString()
+                      .split("T")[0]
+                  }`
+                )
+              : data[`${property as keyof transactionResponse1}`],
+        });
       }
-      return setAddTransactionVisible(val);
     }
-    return setAddTransactionVisible(val);
+    setAddTransactionVisible(!isAddTransactionVisible);
+  };
+
+  const handleCancelAddTransactionModal = () => {
+    form.resetFields();
+    setAddTransactionVisible(!isAddTransactionVisible);
   };
 
   const handleDelete = async (id?: number) => {
@@ -235,9 +303,13 @@ const Transaction: NextPage = () => {
             form.resetFields();
             ToastRender(payload.message);
           })
-          .catch((payload) => ToastRender(payload.message, true));
+          .catch((payload) => {
+            const { message } = payload.data.error;
+            ToastRender(message, true);
+            ToastRender(payload.message, true);
+          });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
     }
   };
@@ -252,7 +324,6 @@ const Transaction: NextPage = () => {
     dateString
   ) => {
     setCurrentDate(`${dateString}-05`);
-    console.log(value, dateString);
   };
 
   return (
@@ -261,7 +332,7 @@ const Transaction: NextPage = () => {
         <Modal
           isVisible={isAddTransactionVisible}
           title=""
-          onCancel={handleAddTransactionToggle}
+          onCancel={handleCancelAddTransactionModal}
           width={768}
         >
           <>
@@ -271,7 +342,7 @@ const Transaction: NextPage = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-5 cursor-pointer"
                 viewBox="0 0 512 512"
-                onClick={() => handleAddTransactionToggle}
+                onClick={handleCancelAddTransactionModal}
               >
                 <path
                   fill="none"
@@ -377,6 +448,7 @@ const Transaction: NextPage = () => {
                   name="date"
                   label="Date"
                   placeholder="2022-01-01"
+                  disabledDate={disabledDate}
                   classes={["flex-1"]}
                   rules={[{ required: true, message: "Please input date" }]}
                 />
@@ -392,7 +464,7 @@ const Transaction: NextPage = () => {
               </div>
               <Button
                 type="submit"
-                classes="px-6 self-end text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+                classes="px-6 self-end text-white bg-primary"
               >
                 <>Save</>
               </Button>
@@ -480,10 +552,7 @@ const Transaction: NextPage = () => {
                   />
                 </div>
               </div>
-              <Button
-                type="submit"
-                classes="px-6 self-end text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
-              >
+              <Button type="submit" classes="px-6 self-end text-white">
                 <>Apply Filter</>
               </Button>
             </Form>
@@ -492,29 +561,12 @@ const Transaction: NextPage = () => {
         <Navbar classes={"transaction"}>
           <>
             <div className="relative search-input">
-              <div className="flex absolute inset-y-0 left-0 items-center pl-0 pointer-events-none">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 text-typography-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
-                </svg>
-              </div>
               <Input
                 type="text"
                 name="search"
                 placeholder="Search Income, Expense..."
                 onChange={(el: any) => onSearchHandler(el)}
-                className="block p-2 text-sm text-typography-900 rounded flex"
+                className="block p-2 text-sm text-typography-900 flex"
                 prefix={
                   <svg
                     aria-hidden="true"
@@ -550,7 +602,7 @@ const Transaction: NextPage = () => {
                 <>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="ionicon w-6 text-secondary-3"
+                    className="ionicon w-6 text-secondary"
                     viewBox="0 0 512 512"
                   >
                     <path
@@ -568,7 +620,7 @@ const Transaction: NextPage = () => {
 
               <Button
                 type="button"
-                classes="py-2 px-4 text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+                classes="px-4 text-white bg-primary"
                 onClick={() => handleAddTransactionToggle(undefined, "add")}
               >
                 <span>New Transaction</span>
@@ -607,7 +659,7 @@ const Transaction: NextPage = () => {
         </div>
         <div className="flex px-6 py-6 gap-12">
           <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-1 rounded mb-6">
+            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-income rounded mb-6">
               <h2>Income</h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.income}>
@@ -617,7 +669,7 @@ const Transaction: NextPage = () => {
                     toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
-                    colors={["bg-secondary-1", "bg-green-100 text-green-800"]}
+                    colors={["bg-income", "bg-green-100 text-green-800"]}
                     data={t}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
@@ -626,7 +678,7 @@ const Transaction: NextPage = () => {
             </Loader>
           </div>
           <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-2 rounded mb-6">
+            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-debt rounded mb-6">
               <h2>Debt / Loan</h2>
             </div>
             <Loader
@@ -639,7 +691,7 @@ const Transaction: NextPage = () => {
                     toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
-                    colors={["bg-secondary-2", "bg-yellow-100 text-yellow-800"]}
+                    colors={["bg-debt", "bg-yellow-100 text-yellow-800"]}
                     data={t}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
@@ -647,8 +699,8 @@ const Transaction: NextPage = () => {
               </>
             </Loader>
           </div>
-          <div className="flex-1 grow">
-            <div className="bg-primary-50 text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-secondary-3 rounded mb-6">
+          <div className="flex-1 grow" ref={indexRef}>
+            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-primary rounded mb-6">
               <h2>Expense</h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.expense}>
@@ -658,7 +710,7 @@ const Transaction: NextPage = () => {
                     toggleDeleteConfirm={toggleDeleteConfirm}
                     handleDelete={handleDelete}
                     handleForm={handleAddTransactionToggle}
-                    colors={["bg-secondary-3", "bg-red-100 text-red-800"]}
+                    colors={["bg-primary", "bg-red-100 text-red-800"]}
                     data={t}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />

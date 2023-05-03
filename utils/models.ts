@@ -17,7 +17,7 @@ export interface transactionResponse1 {
 }
 
 export interface transactionResponse {
-  all: {
+  all?: {
     id: number;
     currency: string;
     amount: number;
@@ -76,6 +76,7 @@ export interface transactionQueries {
   dateTo?: string;
   search?: string;
   user: number;
+  starter: number;
 }
 
 export interface Wallet {
@@ -171,6 +172,9 @@ export interface categoriesResponse1 {
     updatedAt: string;
     publishedAt: string;
     budget: number | null;
+    usedBudget?: number;
+    usedBudgetPercentage?: number;
+    usedBudgetColor?: string;
     transaction_type: {
       id: number;
       name: string;
@@ -194,6 +198,8 @@ export interface categoriesBody {
 
 export interface categoriesQueries {
   user: number;
+  dateFrom?: string;
+  dateTo?: string;
 }
 [];
 

@@ -65,15 +65,13 @@ const Signup: NextPage = () => {
         <h6 className="text-typography-900">
           Already have an account?&nbsp;
           <Link href="/login">
-            <a className="text-secondary-3 hover:text-secondary-hover-3">
-              Login
-            </a>
+            <a className="text-secondary hover:text-secondary-hover-3">Login</a>
           </Link>
         </h6>
         <div className="grid grid-cols-2 gap-4 mt-8">
           <Button
             type="button"
-            classes="text-typography-900 bg-primary-50 border border-typography-300 px-5 py-2.5"
+            classes="text-typography-900 bg-white border border-typography-300 px-5 py-2.5"
           >
             <>
               <svg
@@ -106,7 +104,7 @@ const Signup: NextPage = () => {
           </Button>
           <Button
             type="button"
-            classes="text-primary-50 bg-social-facebook px-5 py-2.5"
+            classes="text-white bg-social-facebook px-5 py-2.5"
           >
             <>
               <svg
@@ -178,7 +176,7 @@ const Signup: NextPage = () => {
 
             <Button
               type="submit"
-              classes="w-full text-primary-50 bg-secondary-3 hover:bg-secondary-hover-3"
+              classes="w-full text-white bg-secondary hover:bg-secondary-hover-3"
             >
               <>Register</>
             </Button>

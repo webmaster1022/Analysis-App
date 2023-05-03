@@ -6,6 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Popover } from "../Popover/Popover";
 import { TransactionPopContent } from "./PopoverContent";
 import { transactionResponse1 } from "../../utils/models";
+import { format } from "date-fns";
 
 interface props {
   data?: any;
@@ -28,8 +29,9 @@ export const TransactionItem: React.FC<props> = ({
   toggleDeleteConfirm,
   isDeleteConfirmVisible,
 }) => {
+  console.log(data);
   return (
-    <div className="bg-primary-50 rounded p-6 mb-4">
+    <div className="bg-white rounded p-6 mb-4">
       <div className="flex justify-between items-center">
         <p className="flex items-center text-xs text-typography-300">
           <svg
@@ -54,7 +56,7 @@ export const TransactionItem: React.FC<props> = ({
               d="M256 128v144h96"
             />
           </svg>
-          Jan 32
+          {format(new Date(data.date), "E dd")}
         </p>
         <Popover
           toggleDeleteConfirmHandler={toggleDeleteConfirm}

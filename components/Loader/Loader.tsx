@@ -18,7 +18,7 @@ export const Loader: React.FC<props> = ({
 }) => {
   console.log(data);
   return (
-    <>
+    <div>
       {loading ? (
         <Skeleton active />
       ) : (
@@ -30,6 +30,6 @@ export const Loader: React.FC<props> = ({
           )}
         </>
       )}
-    </>
+    </div>
   );
 };

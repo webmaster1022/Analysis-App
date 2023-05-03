@@ -6,6 +6,7 @@ import { Date } from "./types/Date";
 import { TextArea } from "./types/TextArea";
 import { categoryTypes } from "../../pages/transaction";
 import { Moment } from "moment";
+import { RangePickerProps } from "antd/lib/date-picker";
 
 interface props {
   element: string;
@@ -23,6 +24,7 @@ interface props {
   value?: string;
   defaultValue?: Moment | string;
   picker?: "time" | "date" | "week" | "month" | "quarter" | "year";
+  disabledDate?: RangePickerProps["disabledDate"];
 }
 
 export const FormControl: React.FC<props> = ({

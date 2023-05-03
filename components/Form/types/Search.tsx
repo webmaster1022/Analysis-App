@@ -18,7 +18,7 @@ export const Search: React.FC<props> = ({
     <Form.Item name={name} label={label} className="w-full">
       <Field
         {...rest}
-        className={`bg-primary-50 border-0 shadow-none text-typography-900 text-sm focus:outline-none ${classes[1]}`}
+        className={`bg-transparent border-0 shadow-none text-typography-900 text-sm focus:outline-none ${classes[1]}`}
       />
     </Form.Item>
   );

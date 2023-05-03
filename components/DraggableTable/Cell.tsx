@@ -9,5 +9,5 @@ interface props {
 }
 
 export const Cell: React.FC<props> = ({ classes, rowData }) => {
-  return <td className="py-4 px-6 border border-secondary-2">{rowData}</td>;
+  return <td className="py-4 px-6 border border-debt">{rowData}</td>;
 };

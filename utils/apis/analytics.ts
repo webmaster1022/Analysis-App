@@ -16,12 +16,13 @@ export const AnalyticsApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAnalytics: builder.query<AnalyticsResponse, analyticsQueries>({
       query: (arg) => {
+        console.log(arg);
         const queries = QueryString.stringify(arg, {
           encodeValuesOnly: true,
         });
         return `/analytics?${queries}`;
       },
-      providesTags: ["Analytics"],
+      providesTags: ["Transactions"],
     }),
   }),
 });

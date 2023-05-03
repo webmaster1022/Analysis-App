@@ -18,7 +18,7 @@ export const Button: React.FC<props> = ({
   return (
     <button
       type={type}
-      className={`transition font-semibold rounded text-sm justify-center inline-flex items-center hover:duration-150 ${classes}`}
+      className={`transition font-semibold rounded text-sm justify-center inline-flex items-center hover:duration-250 ${classes}`}
       {...rest}
     >
       {children}

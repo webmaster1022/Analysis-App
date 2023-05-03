@@ -9,7 +9,7 @@ interface props {
 export const Navbar: React.FC<props> = ({ children, classes }) => {
   return (
     <nav
-      className={`navbar bg-primary-50 w-full flex justify-between px-6 py-3 ${classes}`}
+      className={`navbar bg-white drop-shadow-sm w-full flex justify-between px-6 ${classes}`}
     >
       {children}
     </nav>
