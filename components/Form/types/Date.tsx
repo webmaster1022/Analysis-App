@@ -8,6 +8,7 @@ interface props {
   label?: string;
   classes: string[];
   rules?: {}[];
+  format?: string;
   disabledDate?: RangePickerProps["disabledDate"];
 }
 
@@ -16,6 +17,7 @@ export const Date: React.FC<props> = ({
   label,
   classes,
   rules,
+  format,
   disabledDate,
   ...rest
 }): JSX.Element => {
@@ -30,6 +32,7 @@ export const Date: React.FC<props> = ({
         {...rest}
         name={name}
         disabledDate={disabledDate}
+        format={format}
         className={`border text-typography-900 text-sm rounded focus:outline-none focus:shadow-none shadow-none w-full ${classes[1]}`}
       />
     </Form.Item>

@@ -57,7 +57,7 @@ interface addTransactionValues {
   id?: number;
   transaction_type: string;
   wallet: string | null;
-  category: string;
+  category: {};
   amount: number | null;
   date: Date | null;
   note: string | null;
@@ -87,6 +87,13 @@ const Transaction: NextPage = () => {
   const [categories, setCategories] = useState<categoryTypes[]>();
   const [isDeleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [categoryDefaultValue, setCategoryDefaultValue] = useState("");
+  const [isPopoverVisible, setPopoverVisibility] = useState<{
+    open: boolean;
+    id: number | null;
+  }>({
+    open: false,
+    id: null,
+  });
   // const [transactions, setTransactions] = useState<transactionResponse>();
   // const [mergedIncome, setMergedIncome] = useState<
   //   transactionResponse["income"]
@@ -107,7 +114,7 @@ const Transaction: NextPage = () => {
     id: undefined,
     wallet: null,
     transaction_type: "",
-    category: "",
+    category: {},
     amount: null,
     date: null,
     note: null,
@@ -218,17 +225,12 @@ const Transaction: NextPage = () => {
         form.setFieldsValue({
           [property]:
             property === "date"
-              ? moment(
-                  `${
-                    data[`${property as keyof transactionResponse1}`]
-                      .toString()
-                      .split("T")[0]
-                  }`
-                )
+              ? moment(`${data[`${property as keyof transactionResponse1}`]}`)
               : data[`${property as keyof transactionResponse1}`],
         });
       }
     }
+    setPopoverVisibility({ ...isPopoverVisible, open: false, id: null });
     setAddTransactionVisible(!isAddTransactionVisible);
   };
 
@@ -268,7 +270,7 @@ const Transaction: NextPage = () => {
     }
   };
 
-  const categorySelectionHandler = (value: string) => {
+  const categorySelectionHandler = (value: string, data: any) => {
     form.setFieldsValue(value);
   };
 
@@ -283,11 +285,13 @@ const Transaction: NextPage = () => {
     values: transactionResponse1["data"]
   ) => {
     try {
-      console.log(values);
       if (addTransaactionMode !== "add") {
         console.log("update");
 
-        await updateTransaction({ ...values })
+        await updateTransaction({
+          ...values,
+          date: moment(values.date).format("YYYY-MM-DD").toString(),
+        })
           .unwrap()
           .then((payload) => {
             form.resetFields();
@@ -297,7 +301,11 @@ const Transaction: NextPage = () => {
       } else {
         console.log("add");
         values = omit(values, ["id"]);
-        await addTransaction({ ...values, users_id: user?.id })
+        await addTransaction({
+          ...values,
+          users_id: user?.id,
+          date: moment(values.date).format("YYYY-MM-DD").toString(),
+        })
           .unwrap()
           .then((payload) => {
             form.resetFields();
@@ -326,6 +334,14 @@ const Transaction: NextPage = () => {
     setCurrentDate(`${dateString}-05`);
   };
 
+  const onPopoverOpen = (id: number) => {
+    setPopoverVisibility({
+      ...isPopoverVisible,
+      open: !isPopoverVisible.open,
+      id: id,
+    });
+  };
+
   return (
     <Dashboard title={"transaction"}>
       <>
@@ -337,7 +353,9 @@ const Transaction: NextPage = () => {
         >
           <>
             <div className="modal-header flex justify-between items-center py-6 px-12 border-b border-typography-100">
-              <h1 className="text-2xl font-semibold">Add Transaction</h1>
+              <h1 className="text-2xl font-semibold capitalize">
+                {addTransaactionMode} Transaction
+              </h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-5 cursor-pointer"
@@ -413,12 +431,11 @@ const Transaction: NextPage = () => {
                   showSearch={true}
                   onChange={categorySelectionHandler}
                   rules={[{ required: true }]}
-                  // value={categoryDefaultValue}
                 >
                   <>
                     {categories &&
                       categories.map((c) => (
-                        <Option key={c.id} value={c.name}>
+                        <Option key={c.id} value={c.name} data={c}>
                           {c.name}
                         </Option>
                       ))}
@@ -448,6 +465,7 @@ const Transaction: NextPage = () => {
                   name="date"
                   label="Date"
                   placeholder="2022-01-01"
+                  format="YYYY-MM-DD"
                   disabledDate={disabledDate}
                   classes={["flex-1"]}
                   rules={[{ required: true, message: "Please input date" }]}
@@ -467,93 +485,6 @@ const Transaction: NextPage = () => {
                 classes="px-6 self-end text-white bg-primary"
               >
                 <>Save</>
-              </Button>
-            </Form>
-          </>
-        </Modal>
-        <Modal
-          isVisible={isFilterVisible}
-          title=""
-          onCancel={handleFilterToggle}
-          width={768}
-        >
-          <>
-            <div className="modal-header flex justify-between items-center py-6 px-12 border-b border-typography-100">
-              <h1 className="text-2xl font-semibold">Filter</h1>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="ionicon w-5 cursor-pointer"
-                viewBox="0 0 512 512"
-                onClick={handleFilterToggle}
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="56"
-                  d="M368 368L144 144M368 144L144 368"
-                />
-              </svg>
-            </div>
-            <Form
-              layout="vertical"
-              initialValues={filterInitValues}
-              autoComplete="off"
-              className="filter flex flex-col px-14 py-10"
-            >
-              <div className="flex gap-4">
-                <FormControl
-                  element="select"
-                  name="wallet"
-                  label="Wallet"
-                  placeholder="Bank"
-                  classes={["flex-1"]}
-                >
-                  <>
-                    {/* {wallets.map((w) => (
-                      <Option key={w.id}>{w.name}</Option>
-                    ))} */}
-                  </>
-                </FormControl>
-                <FormControl
-                  element="select"
-                  name="transaction"
-                  label="Transaction"
-                  placeholder="Income"
-                  classes={["flex-1"]}
-                >
-                  <>
-                    {/* {transactionTypes.map((t) => (
-                      <Option key={t.id}>{t.attributes.name}</Option>
-                    ))} */}
-                  </>
-                </FormControl>
-              </div>
-              <div>
-                <label
-                  htmlFor="base-input"
-                  className="block mb-2 text-sm font-medium text-typography-900"
-                >
-                  Date
-                </label>
-                <div className="flex gap-4">
-                  <FormControl
-                    element="date"
-                    name="startDate"
-                    placeholder="From"
-                    classes={["flex-1"]}
-                  />
-                  <FormControl
-                    element="date"
-                    name="endDate"
-                    placeholder="To"
-                    classes={["flex-1"]}
-                  />
-                </div>
-              </div>
-              <Button type="submit" classes="px-6 self-end text-white">
-                <>Apply Filter</>
               </Button>
             </Form>
           </>
@@ -659,8 +590,10 @@ const Transaction: NextPage = () => {
         </div>
         <div className="flex px-6 py-6 gap-12">
           <div className="flex-1 grow">
-            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-income rounded mb-6">
-              <h2>Income</h2>
+            <div className="bg-white px-4 py-2.5 border-l-4 border-income rounded mb-6">
+              <h2 className="text-sm text-typography-900/80 font-semibold">
+                Income
+              </h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.income}>
               <>
@@ -671,6 +604,9 @@ const Transaction: NextPage = () => {
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-income", "bg-green-100 text-green-800"]}
                     data={t}
+                    isPopoverVisible={isPopoverVisible.open}
+                    popoverId={isPopoverVisible.id}
+                    popoverHandler={() => onPopoverOpen(t.id)}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}
@@ -678,8 +614,10 @@ const Transaction: NextPage = () => {
             </Loader>
           </div>
           <div className="flex-1 grow">
-            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-debt rounded mb-6">
-              <h2>Debt / Loan</h2>
+            <div className="bg-white px-4 py-2.5 border-l-4 border-debt rounded mb-6">
+              <h2 className="text-sm text-typography-900/80 font-semibold">
+                Debt / Loan
+              </h2>
             </div>
             <Loader
               loading={isTransactionLoading}
@@ -693,6 +631,9 @@ const Transaction: NextPage = () => {
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-debt", "bg-yellow-100 text-yellow-800"]}
                     data={t}
+                    isPopoverVisible={isPopoverVisible.open}
+                    popoverId={isPopoverVisible.id}
+                    popoverHandler={() => onPopoverOpen(t.id)}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}
@@ -700,8 +641,10 @@ const Transaction: NextPage = () => {
             </Loader>
           </div>
           <div className="flex-1 grow" ref={indexRef}>
-            <div className="bg-white text-sm text-typography-900 font-semibold px-4 py-2.5 border-l-4 border-primary rounded mb-6">
-              <h2>Expense</h2>
+            <div className="bg-white px-4 py-2.5 border-l-4 border-primary rounded mb-6">
+              <h2 className="text-sm text-typography-900/80 font-semibold">
+                Expense
+              </h2>
             </div>
             <Loader loading={isTransactionLoading} data={transactions?.expense}>
               <>
@@ -712,6 +655,9 @@ const Transaction: NextPage = () => {
                     handleForm={handleAddTransactionToggle}
                     colors={["bg-primary", "bg-red-100 text-red-800"]}
                     data={t}
+                    isPopoverVisible={isPopoverVisible.open}
+                    popoverId={isPopoverVisible.id}
+                    popoverHandler={() => onPopoverOpen(t.id)}
                     isDeleteConfirmVisible={isDeleteConfirmVisible}
                   />
                 ))}

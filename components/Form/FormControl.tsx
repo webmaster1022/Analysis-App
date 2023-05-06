@@ -20,6 +20,7 @@ interface props {
   children?: JSX.Element;
   rows?: number;
   showSearch?: boolean;
+  format?: string;
   onChange?: (value: any, dateString?: string) => any;
   value?: string;
   defaultValue?: Moment | string;

@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 export interface transactionResponse1 {
   message: string;
   data: {
@@ -217,5 +219,5 @@ export interface login {
 
 export interface refreshResponse {
   message: string;
-  payload: string;
+  token: string;
 }

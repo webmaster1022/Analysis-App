@@ -25,7 +25,7 @@ export const TransactionPopContent: React.FC<props> = ({
     <div className="flex flex-col gap-2">
       <div
         className="flex gap-2 cursor-pointer"
-        onClick={() => edit(data, "update")}
+        onClick={() => edit(data, "Edit")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

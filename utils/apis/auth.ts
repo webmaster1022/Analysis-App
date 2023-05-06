@@ -78,7 +78,7 @@ export const authApis = baseApi.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Auth"],
+      providesTags: ["User"],
     }),
     logout: builder.query<any, void>({
       query: () => {
@@ -98,6 +98,6 @@ export const {
   useSignupMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
-  useLazyFindUserQuery,
+  useFindUserQuery,
   useLazyLogoutQuery,
 } = authApis;

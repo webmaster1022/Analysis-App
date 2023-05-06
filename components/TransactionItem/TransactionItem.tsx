@@ -16,6 +16,9 @@ interface props {
   toggle?: () => void;
   handleDelete: (id?: number) => void;
   toggleDeleteConfirm: () => void;
+  isPopoverVisible: boolean;
+  popoverId: number | null;
+  popoverHandler: () => void;
   isDeleteConfirmVisible: boolean;
 }
 
@@ -27,6 +30,9 @@ export const TransactionItem: React.FC<props> = ({
   handleForm,
   handleDelete,
   toggleDeleteConfirm,
+  isPopoverVisible,
+  popoverId,
+  popoverHandler,
   isDeleteConfirmVisible,
 }) => {
   console.log(data);
@@ -59,8 +65,9 @@ export const TransactionItem: React.FC<props> = ({
           {format(new Date(data.date), "E dd")}
         </p>
         <Popover
-          toggleDeleteConfirmHandler={toggleDeleteConfirm}
-          visible={isDeleteConfirmVisible}
+          visibleHandler={popoverHandler}
+          visible={isPopoverVisible}
+          compareId={[data.id, popoverId]}
           content={
             <TransactionPopContent
               edit={handleForm}

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { removeCredentials } from "../redux/slices/auth.slice";
 import { refreshResponse } from "./models";
 
 const baseQuery = fetchBaseQuery({
@@ -27,10 +28,10 @@ const baseQueryWithRefresh: typeof baseQuery = async (
     console.log("-------------");
     console.log(refreshResult);
     console.log("-------------");
-    if (typeof (refreshResult.data as refreshResponse).payload === "string") {
+    if (typeof (refreshResult.data as refreshResponse).token === "string") {
       result = await baseQuery(args, api, extraOptions);
     } else {
-      // api.dispatch(removeCredentials())
+      api.dispatch(removeCredentials());
       baseApi.util.resetApiState();
     }
   }
@@ -44,6 +45,7 @@ export const tagTypes = [
   "Categories",
   "Analytics",
   "Auth",
+  "User",
 ];
 export const baseApi = createApi({
   reducerPath: "api",
@@ -55,6 +57,7 @@ export const baseApi = createApi({
     "Categories",
     "Analytics",
     "Auth",
+    "User",
   ],
   endpoints: () => ({}),
 });

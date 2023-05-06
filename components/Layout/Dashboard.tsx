@@ -5,10 +5,7 @@ import Router from "next/router";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { removeCredentials } from "../../redux/slices/auth.slice";
-import {
-  useLazyFindUserQuery,
-  useLazyLogoutQuery,
-} from "../../utils/apis/auth";
+import { useFindUserQuery, useLazyLogoutQuery } from "../../utils/apis/auth";
 import { baseApi } from "../../utils/baseUrl";
 import { Navbar } from "../Navbar/Navbar";
 import { Sidenav } from "../Sidenav/Sidenav";
@@ -41,10 +38,10 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
   const { id }: any = jwt.decode(token as string);
   const [isUpdateProfileVisible, setUpdateProfileVisible] = useState(false);
 
-  const [getUser, { data: userData }] = useLazyFindUserQuery();
+  const { data: userData } = useFindUserQuery({ id });
   console.log("user data", userData);
   const [triggerLogout] = useLazyLogoutQuery();
-  const updateProfilenitValues: updateProfileTypes = {
+  let updateProfilenitValues: updateProfileTypes = {
     id: undefined,
     wallet: null,
     transaction_type: "",
@@ -62,11 +59,6 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleUpdateProfileModal = () => {
-    getUser({ id });
-    setUpdateProfileVisible(!isUpdateProfileVisible);
   };
 
   const onFinishedTransaction = async () =>
@@ -87,148 +79,6 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
     };
   return (
     <>
-      {!userData && console.log("loading")}
-      <Modal
-        isVisible={isUpdateProfileVisible}
-        title=""
-        onCancel={handleUpdateProfileModal}
-        width={768}
-      >
-        <div className="flex flex-col gap-6 p-6">
-          <div className="modal-header">
-            <div className="flex flex-col gap-4">
-              <div className="w-full h-[110px] bg-secondary rounded-t"></div>
-              <div className="flex justify-between items-center">
-                <div className="flex gap-6">
-                  <div className="relative w-[120px] h-[120px] rounded-[50%] mt-[-56px] bg-secondary">
-                    <Image
-                      src={"/user(2).png"}
-                      width={"100%"}
-                      height={"100%"}
-                      layout="fill"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-1">
-                    {userData ? (
-                      <>
-                        <h1 className="text-xl font-bold">
-                          {userData.data.firstname} {userData.data.lastname}
-                        </h1>
-                        <p className="text-sm">
-                          Premium designed icons for use in web, iOS, Android,
-                          and desktop apps.
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <h1 className="text-xl font-bold">
-                          <Skeleton active />
-                        </h1>
-                        <p className="text-sm">
-                          <Skeleton active />
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  classes="p-2 border rounded-[50%] mt-[-10px] border-primary"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="32"
-                    viewBox="0 96 960 960"
-                    width="32"
-                    className="fill-primary"
-                  >
-                    <path d="M180 876h44l443-443-44-44-443 443v44Zm614-486L666 262l42-42q17-17 42-17t42 17l44 44q17 17 17 42t-17 42l-42 42Zm-42 42L248 936H120V808l504-504 128 128Zm-107-21-22-22 44 44-22-22Z" />
-                  </svg>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <Form
-            layout="vertical"
-            initialValues={updateProfilenitValues}
-            autoComplete="off"
-            className="add-transaction flex flex-col"
-            form={form}
-            onFinish={onFinishedTransaction}
-          >
-            <div className="flex gap-4">
-              <FormControl
-                type="text"
-                element="input"
-                name="firstname"
-                label="First Name"
-                placeholder="Mark"
-                classes={["flex-1"]}
-                defaultValue={userData && userData.firstname}
-                rules={[{ required: true, message: "Please input firstname" }]}
-              />
-              <FormControl
-                type="text"
-                element="input"
-                name="lastname"
-                label="Last Name"
-                placeholder="Doe"
-                classes={["flex-1"]}
-                rules={[{ required: true, message: "Please input lastname" }]}
-              />
-            </div>
-            <div className="flex gap-4">
-              <FormControl
-                type="email"
-                element="input"
-                name="email"
-                label="Email"
-                placeholder="markdoe@mail.com"
-                classes={["flex-1"]}
-                rules={[{ required: true, message: "Please input email" }]}
-              />
-              <FormControl
-                type="text"
-                element="input"
-                name="phone"
-                label="Phone"
-                placeholder="+250781560091"
-                classes={["flex-1"]}
-                rules={[{ required: true, message: "Please input phone" }]}
-              />
-            </div>
-            <div className="flex gap-4">
-              <FormControl
-                type="text"
-                element="input"
-                name="username"
-                label="Username"
-                placeholder="mark@12"
-                classes={["flex-1"]}
-                rules={[{ required: true, message: "Please input username" }]}
-              />
-              <FormControl
-                type="password"
-                element="input"
-                name="password"
-                label="Password"
-                classes={["flex-1"]}
-                rules={[{ required: true, message: "Please input password" }]}
-              />
-            </div>
-            <div className="self-start flex gap-4">
-              <Button type="submit" classes="px-6 text-white bg-primary">
-                <>Submit</>
-              </Button>
-              <Button type="submit" classes="px-6 text-white bg-[#042f2e]/80">
-                <>Cancel</>
-              </Button>
-            </div>
-          </Form>
-        </div>
-      </Modal>
-      {/* )} */}
-
       <div className="flex flex-row min-h-screen bg-[#f8f8f8d9]">
         <aside className="sidebar bg-white w-32 h-screen fixed overflow-y-auto z-10 drop-shadow-sm flex flex-col pb-8">
           <ul className="flex flex-col">
@@ -401,35 +251,26 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
                 </>
               </Sidenav>
             </li>
-            <li className="mb-3" onClick={() => handleUpdateProfileModal()}>
-              <Sidenav
-                link="/"
-                classes={`${location.pathname === "/" && "active"}`}
-              >
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ionicon w-8 mb-1 text-typography-300 group-hover:text-primary/60 transition group-hover:duration-150"
-                    viewBox="0 0 512 512"
-                  >
-                    <title></title>
-                    <path
-                      d="M262.29 192.31a64 64 0 1057.4 57.4 64.13 64.13 0 00-57.4-57.4zM416.39 256a154.34 154.34 0 01-1.53 20.79l45.21 35.46a10.81 10.81 0 012.45 13.75l-42.77 74a10.81 10.81 0 01-13.14 4.59l-44.9-18.08a16.11 16.11 0 00-15.17 1.75A164.48 164.48 0 01325 400.8a15.94 15.94 0 00-8.82 12.14l-6.73 47.89a11.08 11.08 0 01-10.68 9.17h-85.54a11.11 11.11 0 01-10.69-8.87l-6.72-47.82a16.07 16.07 0 00-9-12.22 155.3 155.3 0 01-21.46-12.57 16 16 0 00-15.11-1.71l-44.89 18.07a10.81 10.81 0 01-13.14-4.58l-42.77-74a10.8 10.8 0 012.45-13.75l38.21-30a16.05 16.05 0 006-14.08c-.36-4.17-.58-8.33-.58-12.5s.21-8.27.58-12.35a16 16 0 00-6.07-13.94l-38.19-30A10.81 10.81 0 0149.48 186l42.77-74a10.81 10.81 0 0113.14-4.59l44.9 18.08a16.11 16.11 0 0015.17-1.75A164.48 164.48 0 01187 111.2a15.94 15.94 0 008.82-12.14l6.73-47.89A11.08 11.08 0 01213.23 42h85.54a11.11 11.11 0 0110.69 8.87l6.72 47.82a16.07 16.07 0 009 12.22 155.3 155.3 0 0121.46 12.57 16 16 0 0015.11 1.71l44.89-18.07a10.81 10.81 0 0113.14 4.58l42.77 74a10.8 10.8 0 01-2.45 13.75l-38.21 30a16.05 16.05 0 00-6.05 14.08c.33 4.14.55 8.3.55 12.47z"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="32"
-                    />
-                  </svg>
-                  <h6 className="font-medium text-typography-300 group-hover:text-primary/60 transition group-hover:duration-150">
-                    Settings
-                  </h6>
-                </>
-              </Sidenav>
-            </li>
           </ul>
-          <div className="mt-auto" onClick={handleLogout}>
+          <div className="mt-auto">
+            <Sidenav link="" classes="bg-[#f8f8f8d9]">
+              <>
+                <div>
+                  {userData && (
+                    <>
+                      <h6 className="font-medium text-typography-300 group-hover:text-primary/60 transition group-hover:duration-150">
+                        {userData.data.firstname}
+                      </h6>
+                      <h6 className="font-medium text-typography-300 group-hover:text-primary/60 transition group-hover:duration-150">
+                        {userData.data.lastname}
+                      </h6>
+                    </>
+                  )}
+                </div>
+              </>
+            </Sidenav>
+          </div>
+          <div onClick={handleLogout}>
             <Sidenav link="/">
               <>
                 <svg

@@ -158,7 +158,9 @@ const Budget: NextPage = (props) => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: (text) => (
+        <a className="text-sm text-typography-900/80 font-normal">{text}</a>
+      ),
       width: "50%",
     },
     {
@@ -197,7 +199,7 @@ const Budget: NextPage = (props) => {
         <Space size="middle">
           <div
             className="w-4 h-4 cursor-pointer"
-            onClick={() => handleAddBudgetToggle(record)}
+            onClick={() => handleAddBudgetToggle(record, "edit")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -349,7 +351,9 @@ const Budget: NextPage = (props) => {
         >
           <>
             <div className="modal-header flex justify-between items-center py-6 px-12 border-b border-typography-100">
-              <h1 className="text-2xl font-semibold">Filter</h1>
+              <h1 className="text-2xl font-semibold capitalize">
+                {addBudgetMode} Transaction
+              </h1>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-5 cursor-pointer"
@@ -433,117 +437,9 @@ const Budget: NextPage = (props) => {
             </Form>
           </>
         </Modal>
-        <Modal
-          isVisible={isFilterVisible}
-          title="dsa"
-          onCancel={handleFilterToggle}
-          width={768}
-        >
-          <>
-            <div className="modal-header flex justify-between items-center py-6 px-10 border-b border-typography-100">
-              <h1 className="text-2xl font-semibold">Filter</h1>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="ionicon w-5 cursor-pointer"
-                viewBox="0 0 512 512"
-                onClick={handleFilterToggle}
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="56"
-                  d="M368 368L144 144M368 144L144 368"
-                />
-              </svg>
-            </div>
-            <Form
-              layout="vertical"
-              initialValues={filterInitValues}
-              autoComplete="off"
-              className="filter flex flex-col px-12 py-10"
-            >
-              <div className="flex gap-4">
-                <FormControl
-                  element="select"
-                  name="transaction"
-                  label="Transaction"
-                  placeholder="Income"
-                  classes={["flex-1"]}
-                >
-                  <>
-                    {transactions.map((o) => (
-                      <Option key={o.id}>{o.name}</Option>
-                    ))}
-                  </>
-                </FormControl>
-                <FormControl
-                  element="select"
-                  name="wallet"
-                  label="Wallet"
-                  placeholder="Bank"
-                  classes={["flex-1"]}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="base-input"
-                  className="block mb-2 text-sm font-medium text-typography-900"
-                >
-                  Date
-                </label>
-                <div className="flex gap-4">
-                  <FormControl
-                    element="date"
-                    name="startDate"
-                    placeholder="From"
-                    classes={["flex-1"]}
-                  />
-                  <FormControl
-                    element="date"
-                    name="endDate"
-                    placeholder="To"
-                    classes={["flex-1"]}
-                  />
-                </div>
-              </div>
-              <Button
-                type="submit"
-                classes="py-2 px-4 self-end text-white bg-primary"
-              >
-                <>Apply Filter</>
-              </Button>
-            </Form>
-          </>
-        </Modal>
         <Navbar>
           <>
             <div className="flex ml-auto gap-6">
-              {/* <Button
-                type="button"
-                classes="p-2 flex gap-2"
-                onClick={handleFilterToggle}
-              >
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ionicon w-6 text-secondary"
-                    viewBox="0 0 512 512"
-                  >
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="32"
-                      d="M32 144h448M112 256h288M208 368h96"
-                    />
-                  </svg>
-                  <span className="font-semibold">Filter</span>
-                </>
-              </Button> */}
-
               <Button
                 type="button"
                 classes="py-2 px-4 text-white bg-primary"

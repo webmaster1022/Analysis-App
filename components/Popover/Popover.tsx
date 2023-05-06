@@ -9,14 +9,16 @@ interface props {
   content?: JSX.Element;
   onClick?: () => void;
   visible: boolean;
-  toggleDeleteConfirmHandler: () => void;
+  compareId: number[];
+  visibleHandler: () => void;
 }
 export const Popover: React.FC<props> = ({
   classes,
   children,
   content,
   visible,
-  toggleDeleteConfirmHandler,
+  compareId,
+  visibleHandler,
   ...rest
 }) => {
   return (
@@ -24,6 +26,8 @@ export const Popover: React.FC<props> = ({
       placement="bottomRight"
       content={content}
       trigger="click"
+      visible={visible && compareId[0] === compareId[1]}
+      onVisibleChange={visibleHandler}
       // arrowPointAtCenter
     >
       {children}

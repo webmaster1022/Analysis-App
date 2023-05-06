@@ -138,12 +138,12 @@ const Home: NextPage = () => {
   const [dateType, setDateType] = useState<
     "time" | "date" | "month" | "year" | "week" | "quarter" | undefined
   >("month");
-  const [dateFrom, setDateFrom] = useState(
+  const [dateFrom, setDateFrom] = useState<string>(
     moment(new Date().toISOString().slice(0, 10))
       .startOf("month")
       .format("YYYY-MM-DD")
   );
-  const [dateTo, setDateTo] = useState(
+  const [dateTo, setDateTo] = useState<string>(
     moment(new Date().toISOString().slice(0, 10))
       .endOf("month")
       .format("YYYY-MM-DD")
@@ -240,6 +240,11 @@ const Home: NextPage = () => {
     value,
     dateString: string
   ) => {
+    if (!dateString) {
+      setDateFrom(moment().startOf("month").format("YYYY-MM-DD"));
+      setDateTo(moment().endOf("month").format("YYYY-MM-DD"));
+      return;
+    }
     if (dateType === "month") {
       setDateFrom(
         moment(`${dateString}-05`).startOf("month").format("YYYY-MM-DD")
@@ -285,18 +290,13 @@ const Home: NextPage = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <p>{text}</p>,
+      render: (text) => <p className="text-typography-900/80">{text}</p>,
     },
-    // {
-    //   title: "Age",
-    //   dataIndex: "age",
-    //   key: "age",
-    // },
     {
-      title: "Percentage",
+      title: "Used",
       dataIndex: "percentage",
       key: "percentage",
-      render: (text: any) => <p>{text}%</p>,
+      render: (text: any) => <p className="text-typography-900/80">{text}%</p>,
     },
   ];
   return (
@@ -340,10 +340,10 @@ const Home: NextPage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <h5 className="mb-0 font-bold">
+                    <h5 className="mb-0 font-normal text-typography-900/80">
                       {analytics?.data.transactionsTypesTotal["income"]} RFW
                     </h5>
-                    <p className="mb-0 font-sans font-semibold leading-normal text-sm">
+                    <p className="mb-0 font-normal text-typography-900/80 leading-normal text-sm">
                       Net Income
                     </p>
                   </div>
@@ -365,10 +365,10 @@ const Home: NextPage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <h5 className="mb-0 font-bold">
+                    <h5 className="mb-0 font-normal text-typography-900/80">
                       {analytics?.data.transactionsTypesTotal["debt/loan"]} RFW
                     </h5>
-                    <p className="mb-0 font-sans font-semibold leading-normal text-sm">
+                    <p className="mb-0 font-sans font-normal text-typography-900/80 leading-normal text-sm">
                       Total Debt
                     </p>
                   </div>
@@ -409,10 +409,10 @@ const Home: NextPage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <h5 className="mb-0 font-bold">
+                    <h5 className="mb-0 font-normal text-typography-900/80">
                       {analytics?.data.transactionsTypesTotal.expense} RFW
                     </h5>
-                    <p className="mb-0 font-sans font-semibold leading-normal text-sm">
+                    <p className="mb-0 font-sans font-normal text-typography-900/80 leading-normal text-sm">
                       Total Expense
                     </p>
                   </div>
@@ -434,13 +434,13 @@ const Home: NextPage = () => {
                     </svg>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <h5 className="mb-0 font-bold">
+                    <h5 className="mb-0 font-normal text-typography-900/80">
                       {
                         analytics?.data.transactionsTypesTotal
                           .total_transactions
                       }
                     </h5>
-                    <p className="mb-0 font-sans font-semibold leading-normal text-sm">
+                    <p className="mb-0 font-sans font-normal text-typography-900/80 leading-normal text-sm">
                       Total transactions
                     </p>
                   </div>
@@ -539,11 +539,17 @@ const Home: NextPage = () => {
               ) : (
                 <div>
                   {analytics && (
-                    <div className="p-6">
+                    <div className="flex flex-col gap-4 p-6">
+                      <div className="text-center">
+                        <h6 className="text-xs text-typography-900/70 font-semibold">
+                          Expense analytics
+                        </h6>
+                      </div>
                       <Table
                         columns={columns}
                         dataSource={analytics?.data.expensesAnalytics}
                         pagination={false}
+                        rowKey="id"
                       />
                     </div>
                     // <DoughnutChart
