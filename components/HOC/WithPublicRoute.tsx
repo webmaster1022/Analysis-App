@@ -14,12 +14,9 @@ const WithPublicRoute = (Wrapped: any) => {
       (token && isValidToken(token)) ||
       (localToken && isValidToken(localToken))
     ) {
-      console.log("dddd");
       router.replace("/");
       return null;
     }
-    console.log(JWT_SECRET);
-    console.log(isValidToken(token));
     return <Wrapped {...props} />;
   };
 };

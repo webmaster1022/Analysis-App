@@ -1,82 +1,36 @@
-import Link from "next/link";
-import Image from "next/image";
 import router from "next/router";
-import Router from "next/router";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { removeCredentials } from "../../redux/slices/auth.slice";
 import { useFindUserQuery, useLazyLogoutQuery } from "../../utils/apis/auth";
 import { baseApi } from "../../utils/baseUrl";
-import { Navbar } from "../Navbar/Navbar";
 import { Sidenav } from "../Sidenav/Sidenav";
-import { Modal } from "../Modal/Modal";
 import jwt from "jsonwebtoken";
-import { FormControl } from "../Form/FormControl";
-import { Button } from "../Button/Button";
-import { Form, Skeleton } from "antd";
+import { ToastRender } from "../../utils/toast";
 
 interface props {
   children: JSX.Element;
   title?: string;
 }
 
-interface updateProfileTypes {
-  id?: number;
-  transaction_type: string;
-  wallet: string | null;
-  category: string;
-  amount: number | null;
-  date: Date | null;
-  note: string | null;
-}
-
-const Dashboard: React.FC<props> = ({ children, title }) => {
-  const [form] = Form.useForm();
+const Dashboard: React.FC<props> = React.memo(({ children, title }) => {
   const dispatch = useDispatch();
 
   const token = localStorage.getItem("_expense_tracker_tkn_");
   const { id }: any = jwt.decode(token as string);
-  const [isUpdateProfileVisible, setUpdateProfileVisible] = useState(false);
 
   const { data: userData } = useFindUserQuery({ id });
-  console.log("user data", userData);
   const [triggerLogout] = useLazyLogoutQuery();
-  let updateProfilenitValues: updateProfileTypes = {
-    id: undefined,
-    wallet: null,
-    transaction_type: "",
-    category: "",
-    amount: null,
-    date: null,
-    note: null,
-  };
   const handleLogout = async () => {
     try {
       await triggerLogout();
       dispatch(removeCredentials());
       dispatch(baseApi.util.resetApiState());
       router.replace("/login");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      ToastRender(error, true);
     }
   };
-
-  const onFinishedTransaction = async () =>
-    // values: transactionResponse1["data"]
-    {
-      // try {
-      //     await updateTransaction({ ...values })
-      //       .unwrap()
-      //       .then((payload) => {
-      //         form.resetFields();
-      //         ToastRender(payload.message);
-      //       })
-      //       .catch((payload) => ToastRender(payload.message, true));
-      //   }
-      // } catch (error: any) {
-      //   console.log(error);
-      // }
-    };
   return (
     <>
       <div className="flex flex-row min-h-screen bg-[#f8f8f8d9]">
@@ -299,6 +253,6 @@ const Dashboard: React.FC<props> = ({ children, title }) => {
       </div>
     </>
   );
-};
+});
 
 export default Dashboard;

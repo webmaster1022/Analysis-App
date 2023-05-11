@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Auth from "../../components/Layout/Auth";
-import Link from "next/link";
 import { Collapse, Empty, Popconfirm, Select, Space, Table, Tag } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { Button } from "../../components/Button/Button";
@@ -82,7 +80,6 @@ interface addBudgetValues {
 }
 
 const Budget: NextPage = (props) => {
-  console.log(props);
   const [form] = Form.useForm();
   const { Panel } = Collapse;
   const token = localStorage.getItem("_expense_tracker_tkn_");
@@ -106,8 +103,6 @@ const Budget: NextPage = (props) => {
 
   const [updateBudget] = useUpdateBudgetMutation();
   const [deleteBudget] = useDeleteBudgetMutation();
-
-  console.log(categories?.filter((d) => d.transaction_type.name === "Income"));
   const searchInitValues: searchValues = { search: "" };
   const filterInitValues: filterValues = {
     transaction: "",
@@ -140,7 +135,6 @@ const Budget: NextPage = (props) => {
   });
 
   const categoryColor = (type: string) => {
-    console.log(type);
     switch (type) {
       case "Income":
         return "bg-income/10 text-income";
@@ -178,13 +172,6 @@ const Budget: NextPage = (props) => {
               >
                 {budget} Rfw
               </p>
-              {/* {usedBudget ? (
-                <p
-                  className={`${usedBudgetColor} text-xs font-semibold px-2.5 py-0.5 rounded`}
-                >
-                  {usedBudget} Rfw
-                </p>
-              ) : null} */}
             </div>
           ) : null}
         </>
@@ -225,10 +212,7 @@ const Budget: NextPage = (props) => {
             okText="Yes"
             cancelText="No"
           >
-            <div
-              className="w-4 h-4 cursor-pointer"
-              // onClick={() => handleAddBudgetToggle(record)}
-            >
+            <div className="w-4 h-4 cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="ionicon w-full"
@@ -271,10 +255,8 @@ const Budget: NextPage = (props) => {
     data?: categoriesResponse1["data"],
     mode?: string
   ) => {
-    console.log(mode);
     setAddBudgetMode(mode);
     triggerTypes({ user: 0 });
-    console.log(data);
     if (data) {
       for (const property of Object.keys(addBudgetInitValues)) {
         form.setFieldsValue({
@@ -299,10 +281,7 @@ const Budget: NextPage = (props) => {
 
   const onFinishedBudget = async (values: categoriesBody) => {
     try {
-      console.log(values);
       if (addBudgetMode !== "add") {
-        console.log("update");
-
         await updateBudget({ ...values })
           .unwrap()
           .then((payload) => {
@@ -311,7 +290,6 @@ const Budget: NextPage = (props) => {
           })
           .catch((payload) => ToastRender(payload.message, true));
       } else {
-        console.log("add");
         values = omit(values, ["id"]);
         await addBudget({ ...values, users_permissions_user: user.id })
           .unwrap()
@@ -321,12 +299,11 @@ const Budget: NextPage = (props) => {
           })
           .catch((payload) => {
             const { message } = payload.data.error;
-            console.log(message);
             ToastRender(message, true);
           });
       }
     } catch (error: any) {
-      console.log(error);
+      ToastRender(error, true);
     }
   };
 
@@ -336,7 +313,6 @@ const Budget: NextPage = (props) => {
       ToastRender(result.message);
     } catch (error: any) {
       const { message } = error.data.error;
-      console.log(message);
       ToastRender(message, true);
     }
   };
@@ -485,7 +461,6 @@ const Budget: NextPage = (props) => {
             <Collapse
               bordered={false}
               defaultActiveKey={["1", "2", "3"]}
-              // expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
               className="site-collapse-custom-collapse"
             >
               <Panel

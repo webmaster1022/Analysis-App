@@ -7,17 +7,10 @@ import { FormControl } from "../../components/Form/FormControl";
 import { Form } from "antd";
 import * as Yup from "yup";
 import { NextPage } from "next";
-import {
-  useGoogleLoginMutation,
-  useLoginMutation,
-  useResetPasswordMutation,
-} from "../../utils/apis/auth";
+import { useResetPasswordMutation } from "../../utils/apis/auth";
 import { login } from "../../utils/models";
 import { ToastRender } from "../../utils/toast";
 import WithPublicRoute from "../../components/HOC/WithPublicRoute";
-import { useDispatch, useSelector } from "react-redux";
-import { setCredentials } from "../../redux/slices/auth.slice";
-import { RootState } from "../../app/store";
 import { useRouter } from "next/router";
 
 interface formValues {
@@ -26,12 +19,6 @@ interface formValues {
 
 const ResetPassword: NextPage = () => {
   const router = useRouter();
-  console.log(router);
-  const path = router.asPath;
-  // console.log("-----");
-  // console.log(router);
-  // console.log("-----");
-  const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [userId, setUserId] = useState();
   const initialValues: formValues = { email: "" };
@@ -40,7 +27,6 @@ const ResetPassword: NextPage = () => {
 
   const decodeToken = () => {
     const token = new URL(window.location.href).searchParams.get("token");
-    console.log(token);
     const { id } = jwt.decode(token as any) as any;
     setUserId(id);
     return token;
@@ -75,10 +61,9 @@ const ResetPassword: NextPage = () => {
 
   const onFinishedResetPassword = async (values: login) => {
     try {
-      console.log(values);
-      console.log(userId);
       const result = await resetPassword({ ...values, id: userId }).unwrap();
       form.resetFields();
+      router.replace("/login");
       ToastRender(result.message);
     } catch (error: any) {
       const { message } = error.data.error;
@@ -89,9 +74,6 @@ const ResetPassword: NextPage = () => {
     <Auth>
       <>
         <h1 className="text-3xl font-bold mb-2">Reset Password</h1>
-        {/* <h6 className="text-typography-900">
-          Type your email below to reset password
-        </h6> */}
         <div className="mt-8">
           <Form
             layout="vertical"
@@ -120,7 +102,10 @@ const ResetPassword: NextPage = () => {
               rules={[...validationSchema.confirmPassword]}
             />
 
-            <Button type="submit" classes="w-full text-white bg-primary">
+            <Button
+              type="submit"
+              classes="w-full text-white bg-primary hover:bg-primary/80"
+            >
               <>Submit</>
             </Button>
           </Form>

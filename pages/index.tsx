@@ -1,22 +1,14 @@
 import { Skeleton, Select, DatePicker, DatePickerProps, Table } from "antd";
-import omit from "lodash.omit";
 import moment, { Moment } from "moment";
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useState } from "react";
-import { BarChart } from "../components/Analytics/BarChart";
-import { DoughnutChart } from "../components/Analytics/Doughnut";
 import { LineChart } from "../components/Analytics/LineChart";
 import { PieChart } from "../components/Analytics/PieChart";
-import { Button } from "../components/Button/Button";
-import { FormControl } from "../components/Form/FormControl";
-import { RangeDate } from "../components/Form/types/RangeDate";
 import WithPrivateRoute from "../components/HOC/WithPrivateRoute";
 import Dashboard from "../components/Layout/Dashboard";
 import { Navbar } from "../components/Navbar/Navbar";
 import { useGetAnalyticsQuery } from "../utils/apis/analytics";
 import { AnalyticsResponse } from "../utils/models";
-import Login from "./login";
 import jwt from "jsonwebtoken";
 import { ColumnsType } from "antd/lib/table";
 
@@ -148,8 +140,6 @@ const Home: NextPage = () => {
       .endOf("month")
       .format("YYYY-MM-DD")
   );
-  console.log(dateFrom);
-  console.log(dateTo);
   const { data: analytics, isLoading: isAnalyticsLoading } =
     useGetAnalyticsQuery({
       dateFrom,
@@ -157,70 +147,10 @@ const Home: NextPage = () => {
       type: dateType,
       user: user?.id,
     });
-  console.log("hello world", analytics);
-  console.log("hello world loader", isAnalyticsLoading);
-  console.log(analytics?.data.expensesAnalytics);
   const [walletsAnalytics, setWalletsAnalytics] = useState<{}>({
     labels: [],
     datasets: [],
   });
-
-  // setWalletsAnalytics({
-  //   labels:
-  //     analytics &&
-  //     Object.keys(
-  //       analytics?.data
-  //         .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
-  //     ),
-  //   datasets: [
-  //     {
-  //       label: "Income",
-  //       data:
-  //         analytics &&
-  //         Object.values(
-  //           analytics?.data
-  //             .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
-  //         ),
-  //       backgroundColor: ["#63B5F7", "#7240FF", "#4FA153"],
-  //       borderColor: ["#63B5F7", "#7240FF", "#4FA153"],
-  //       borderWidth: 1,
-  //     },
-  //   ],
-  // });
-  console.log(walletsAnalytics);
-  // const [transactionTypesAnalytics, setTransactionTypesAnalytics] = useState({
-  //   labels: Object.keys(
-  //     omit(analytics?.data.transactionsAnalytics[0], "date") as Pick<
-  //       AnalyticsResponse["data"]["transactionsTypesTotal"],
-  //       "income" | "debt/loan" | "expense"
-  //     >
-  //   ),
-  //   datasets: [
-  //     {
-  //       label: "Income",
-  //       data: analytics?.data.transactionsAnalytics.map((data) => data.income),
-  //       backgroundColor: ["#63B5F7"],
-  //       borderColor: "#63B5F7",
-  //       borderWidth: 1,
-  //     },
-  //     {
-  //       label: "Debt/Loan",
-  //       data: analytics?.data.transactionsAnalytics.map(
-  //         (data) => data["debt/loan"]
-  //       ),
-  //       backgroundColor: ["#7240FF"],
-  //       borderColor: "#7240FF",
-  //       borderWidth: 1,
-  //     },
-  //     {
-  //       label: "Expense",
-  //       data: analytics?.data.transactionsAnalytics.map((data) => data.expense),
-  //       backgroundColor: ["#4FA153"],
-  //       borderColor: "#4FA153",
-  //       borderWidth: 1,
-  //     },
-  //   ],
-  // });
   const handleDateTypeSelection = (
     value: "time" | "date" | "month" | "year" | "week" | "quarter" | undefined
   ) => {
@@ -258,31 +188,6 @@ const Home: NextPage = () => {
         moment(`${dateString}-02-05`).endOf("year").format("YYYY-MM-DD")
       );
     }
-  };
-
-  const getGradient = (
-    ctx: {
-      createLinearGradient: (
-        arg0: any,
-        arg1: number,
-        arg2: any,
-        arg3: number
-      ) => any;
-    },
-    chartArea: { left: any; right: any },
-    color1: string,
-    color2: string
-  ) => {
-    const gradientSegment = ctx.createLinearGradient(
-      chartArea.left,
-      0,
-      chartArea.right,
-      0
-    );
-    gradientSegment.addColorStop(0, color1);
-    gradientSegment.addColorStop(0.5, color2);
-    gradientSegment.addColorStop(1, color2);
-    return gradientSegment;
   };
 
   const columns: ColumnsType<ExpenseDataType> = [
@@ -552,25 +457,6 @@ const Home: NextPage = () => {
                         rowKey="id"
                       />
                     </div>
-                    // <DoughnutChart
-                    //   data={{
-                    //     labels: analytics?.data.expensesAnalytics.map(
-                    //       (e) => e.name
-                    //     ),
-                    //     datasets: [
-                    //       {
-                    //         label: "Income",
-                    //         data: analytics?.data.expensesAnalytics.map(
-                    //           (e) => e.percentage
-                    //         ),
-                    //         backgroundColor: ["#63B5F7", "#7240FF", "#4FA153"],
-                    //         borderColor: ["#63B5F7", "#7240FF", "#4FA153"],
-                    //         borderWidth: 1,
-                    //       },
-                    //     ],
-                    //   }}
-                    //   options={ExpenseOptions}
-                    // />
                   )}
                 </div>
               )}

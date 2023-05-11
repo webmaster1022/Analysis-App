@@ -45,7 +45,6 @@ export const transactionApis = baseApi.injectEndpoints({
       Partial<transactionResponse1["data"]>
     >({
       query: (data) => {
-        console.log(data);
         const { id } = data;
         return {
           url: `/transactions/${id}`,

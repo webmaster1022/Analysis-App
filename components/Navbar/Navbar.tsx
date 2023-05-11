@@ -9,11 +9,9 @@ interface props {
 }
 export const Navbar: React.FC<props> = ({ children, classes }) => {
   return (
-    <nav
-      className={`navbar bg-white drop-shadow-sm w-full flex justify-between px-6 ${classes}`}
-    >
+    <nav className={`navbar bg-white drop-shadow-sm w-full px-6 ${classes}`}>
       <Menu classes="fill-typography-900/80 cursor-pointer" />
-      {children}
+      <div className="flex justify-between w-full">{children}</div>
     </nav>
   );
 };

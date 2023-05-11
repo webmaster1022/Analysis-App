@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import Auth from "../../components/Layout/Auth";
-import Link from "next/link";
 import {
   DatePicker,
   DatePickerProps,
@@ -17,8 +15,6 @@ import { NextPage } from "next";
 import Dashboard from "../../components/Layout/Dashboard";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Modal } from "../../components/Modal/Modal";
-import { toast } from "react-toastify";
-// import { Loader } from "../../components/Loader/Loader";
 import {
   useAddTransactionMutation,
   useDeleteTransactionMutation,
@@ -94,16 +90,6 @@ const Transaction: NextPage = () => {
     open: false,
     id: null,
   });
-  // const [transactions, setTransactions] = useState<transactionResponse>();
-  // const [mergedIncome, setMergedIncome] = useState<
-  //   transactionResponse["income"]
-  // >([]);
-  // const [mergedLoan, setMergedLoan] = useState<
-  //   transactionResponse["debt_loan"]
-  // >([]);
-  // const [mergedExpense, setMergedExpense] = useState<
-  //   transactionResponse["expense"]
-  // >([]);
   const filterInitValues: filterValues = {
     wallet: "",
     transaction: "",
@@ -127,61 +113,6 @@ const Transaction: NextPage = () => {
       user: user?.id,
       starter: currentPage * 10,
     });
-
-  // useMemo(() => {
-  //   if (transactionData) {
-  //     setMergedIncome((income) => [...income, ...transactionData.income]);
-  //     setMergedLoan((debt_loan) => [
-  //       ...debt_loan,
-  //       ...transactionData.debt_loan,
-  //     ]);
-  //     setMergedExpense((expense) => [...expense, ...transactionData.expense]);
-  //   }
-  //   setTransactions({
-  //     income: mergedIncome,
-  //     debt_loan: mergedLoan,
-  //     expense: mergedExpense,
-  //   });
-  // }, [transactionData, currentPage]);
-
-  const indexRef = useRef<HTMLDivElement>(null);
-
-  const onIntersection = (entries: any[]) => {
-    const firstEntry = entries[0];
-    if (firstEntry.isIntersecting) {
-      console.log("well");
-      setCurrentPage((page) => page + 1);
-    }
-  };
-
-  useEffect(() => {
-    // const observer = new IntersectionObserver(onIntersection);
-    // if (observer && indexRef.current) {
-    //   observer.observe(indexRef.current);
-    // }
-    // return () => {
-    //   if (observer) {
-    //     observer.disconnect();
-    //   }
-    // };
-    if (indexRef.current) {
-      console.log(indexRef.current.clientHeight);
-    }
-
-    // if (transactionData) {
-    //   setMergedIncome((income) => [...income, ...transactionData.income]);
-    //   setMergedLoan((debt_loan) => [
-    //     ...debt_loan,
-    //     ...transactionData.debt_loan,
-    //   ]);
-    //   setMergedExpense((expense) => [...expense, ...transactionData.expense]);
-    // }
-    // setTransactions({
-    //   income: mergedIncome,
-    //   debt_loan: mergedLoan,
-    //   expense: mergedExpense,
-    // });
-  }, [indexRef, transactions]);
   const [triggerWallets, { data: wallets }] = useLazyGetWalletsQuery();
 
   const [triggerTypes, { data: transactionTypes }] =
@@ -195,13 +126,6 @@ const Transaction: NextPage = () => {
   const [updateTransaction, { data: updateTransactionResponse }] =
     useUpdateTransactionMutation();
   const [deleteTransaction] = useDeleteTransactionMutation();
-
-  // useEffect(() => {
-  //   dispatch(fetchTransactions({ populate: ["wallet_id"] }));
-  //   dispatch(fetchTransactionTypes({ populate: "*" }));
-  //   dispatch(fetchWallets());
-  // }, []);
-
   const handleSearch = (values: searchValues) => {
     alert(values);
   };
@@ -215,11 +139,9 @@ const Transaction: NextPage = () => {
     data?: transactionResponse1,
     mode?: string
   ) => {
-    console.log(mode);
     setAddTransaactionMode(mode);
     triggerWallets();
     triggerTypes({ user: user?.id });
-    console.log(data);
     if (data) {
       for (const property of Object.keys(addTransactionInitValues)) {
         form.setFieldsValue({
@@ -250,7 +172,6 @@ const Transaction: NextPage = () => {
   };
 
   const toggleDeleteConfirm = () => {
-    console.log(isDeleteConfirmVisible);
     setDeleteConfirmVisible((prev) => !prev);
   };
 
@@ -286,8 +207,6 @@ const Transaction: NextPage = () => {
   ) => {
     try {
       if (addTransaactionMode !== "add") {
-        console.log("update");
-
         await updateTransaction({
           ...values,
           date: moment(values.date).format("YYYY-MM-DD").toString(),
@@ -299,7 +218,6 @@ const Transaction: NextPage = () => {
           })
           .catch((payload) => ToastRender(payload.message, true));
       } else {
-        console.log("add");
         values = omit(values, ["id"]);
         await addTransaction({
           ...values,
@@ -318,12 +236,11 @@ const Transaction: NextPage = () => {
           });
       }
     } catch (error: any) {
-      console.log(error);
+      ToastRender(error, true);
     }
   };
 
   const onSearchHandler = (el: any) => {
-    console.log(el.target.value);
     setSearch(el.target.value);
   };
 
@@ -491,13 +408,13 @@ const Transaction: NextPage = () => {
         </Modal>
         <Navbar classes={"transaction"}>
           <>
-            <div className="relative search-input">
+            <div className="relative search-input ml-2">
               <Input
                 type="text"
                 name="search"
                 placeholder="Search Income, Expense..."
                 onChange={(el: any) => onSearchHandler(el)}
-                className="block p-2 text-sm text-typography-900 flex"
+                className="p-2 text-sm text-typography-900 flex"
                 prefix={
                   <svg
                     aria-hidden="true"
@@ -525,30 +442,6 @@ const Transaction: NextPage = () => {
                 defaultValue={moment(currentDate)}
                 onChange={onChangeDateHandler}
               />
-              {/* <Button
-                type="button"
-                classes="p-2 flex gap-2"
-                onClick={handleFilterToggle}
-              >
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ionicon w-6 text-secondary"
-                    viewBox="0 0 512 512"
-                  >
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="32"
-                      d="M32 144h448M112 256h288M208 368h96"
-                    />
-                  </svg>
-                  <span className="font-semibold">Filter</span>
-                </>
-              </Button> */}
-
               <Button
                 type="button"
                 classes="px-4 text-white bg-primary"
@@ -561,32 +454,6 @@ const Transaction: NextPage = () => {
         </Navbar>
         <div className="flex justify-between items-center px-6 py-6">
           <h1 className="text-2xl font-semibold">Transactions</h1>
-          {/* <div className="flex gap-8">
-            <div className="flex flex-col">
-              <h4 className="text-xl font-semibold">33</h4>
-              <h6 className="text-sm text-typography-300 font-semibold">
-                Total Net Income
-              </h6>
-            </div>
-            <div className="flex flex-col">
-              <h4 className="text-xl font-semibold">33</h4>
-              <h6 className="text-sm text-typography-300 font-semibold">
-                Total Income
-              </h6>
-            </div>
-            <div className="flex flex-col">
-              <h4 className="text-xl font-semibold">33</h4>
-              <h6 className="text-sm text-typography-300 font-semibold">
-                Total Debt/Loan
-              </h6>
-            </div>
-            <div className="flex flex-col">
-              <h4 className="text-xl font-semibold">33</h4>
-              <h6 className="text-sm text-typography-300 font-semibold">
-                Total Expense
-              </h6>
-            </div> 
-          </div>*/}
         </div>
         <div className="flex px-6 py-6 gap-12">
           <div className="flex-1 grow">
@@ -640,7 +507,7 @@ const Transaction: NextPage = () => {
               </>
             </Loader>
           </div>
-          <div className="flex-1 grow" ref={indexRef}>
+          <div className="flex-1 grow">
             <div className="bg-white px-4 py-2.5 border-l-4 border-primary rounded mb-6">
               <h2 className="text-sm text-typography-900/80 font-semibold">
                 Expense

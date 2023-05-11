@@ -17,7 +17,6 @@ export const authApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     signup: builder.mutation<any, login>({
       query: (data) => {
-        console.log(data);
         return {
           url: `/auth/register`,
           method: "POST",
@@ -28,7 +27,6 @@ export const authApis = baseApi.injectEndpoints({
     }),
     login: builder.mutation<any, login>({
       query: (data) => {
-        console.log(data);
         return {
           url: `/auth/login`,
           method: "POST",
@@ -37,11 +35,10 @@ export const authApis = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Auth"],
     }),
-    googleLogin: builder.mutation<any, login["email"]>({
+    googleLogin: builder.mutation<any, any>({
       query: (data) => {
-        console.log(data);
         return {
-          url: `/auth/google`,
+          url: `/auth/login/google?${data.query}`,
           method: "POST",
           body: data,
         };
@@ -50,7 +47,6 @@ export const authApis = baseApi.injectEndpoints({
     }),
     forgotPassword: builder.mutation<any, any>({
       query: (data) => {
-        console.log(data);
         return {
           url: `/auth/forgot-password`,
           method: "POST",
@@ -61,7 +57,6 @@ export const authApis = baseApi.injectEndpoints({
     }),
     resetPassword: builder.mutation<any, any>({
       query: (data) => {
-        console.log(data);
         return {
           url: `/auth/reset-password/${data.id}`,
           method: "PUT",
@@ -72,7 +67,6 @@ export const authApis = baseApi.injectEndpoints({
     }),
     findUser: builder.query<any, any>({
       query: (data) => {
-        console.log(data);
         return {
           url: `/user/${data.id}`,
           method: "GET",

@@ -17,7 +17,6 @@ const slice = createSlice({
       state,
       { payload: { refreshToken } }: PayloadAction<{ refreshToken: string }>
     ) => {
-      console.log(state);
       state.refreshToken = refreshToken;
       localStorage.setItem("_expense_tracker_tkn_", refreshToken);
     },

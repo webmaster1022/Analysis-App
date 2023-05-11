@@ -36,7 +36,6 @@ export const categoryApis = baseApi.injectEndpoints({
       Partial<categoriesBody>
     >({
       query: (data) => {
-        console.log(data);
         const { id } = data;
         return {
           url: `/categories/${id}`,

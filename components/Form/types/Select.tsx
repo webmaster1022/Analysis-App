@@ -22,8 +22,6 @@ export const Select: React.FC<props> = ({
   onChange,
   ...rest
 }): JSX.Element => {
-  console.log(rest);
-  console.log(rules && [rules]);
   return (
     <Form.Item
       className={`mb-6 ${classes[0]}`}

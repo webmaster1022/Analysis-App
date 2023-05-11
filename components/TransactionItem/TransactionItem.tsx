@@ -35,7 +35,6 @@ export const TransactionItem: React.FC<props> = ({
   popoverHandler,
   isDeleteConfirmVisible,
 }) => {
-  console.log(data);
   return (
     <div className="bg-white rounded p-6 mb-4">
       <div className="flex justify-between items-center">

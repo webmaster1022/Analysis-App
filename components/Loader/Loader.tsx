@@ -16,7 +16,6 @@ export const Loader: React.FC<props> = ({
   children,
   ...rest
 }) => {
-  console.log(data);
   return (
     <div>
       {loading ? (

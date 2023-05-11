@@ -12,11 +12,7 @@ const baseQueryWithRefresh: typeof baseQuery = async (
   extraOptions
 ) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log(result);
   if (result.error && result.error.status === 401) {
-    console.log("**********");
-    console.log(result);
-    console.log("*************");
     const refreshResult = await baseQuery(
       {
         url: "/auth/refresh-token",
@@ -25,9 +21,6 @@ const baseQueryWithRefresh: typeof baseQuery = async (
       api,
       extraOptions
     );
-    console.log("-------------");
-    console.log(refreshResult);
-    console.log("-------------");
     if (typeof (refreshResult.data as refreshResponse).token === "string") {
       result = await baseQuery(args, api, extraOptions);
     } else {
