@@ -2,11 +2,9 @@
 
 ## Functionality
 
-- [x] create
-- [x] retrieve
-- [x] update
-- [x] delete
-- [x] rank
+- [x] Transaction Tracking Management
+- [x] budget Management
+- [x] Insight analytics
 
 ## Installation Guide
 
