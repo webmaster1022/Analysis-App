@@ -73,14 +73,14 @@ const Signup: NextPage = () => {
             form={form}
             onFinish={onFinishedSignup}
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-row gap-4">
               <FormControl
                 type="text"
                 element="input"
                 name="firstname"
                 label="First Name"
                 placeholder="John"
-                classes={[]}
+                classes={["!block flex-1"]}
                 rules={[validationSchema.firstname]}
               />
               <FormControl
@@ -89,7 +89,7 @@ const Signup: NextPage = () => {
                 name="lastname"
                 label="Last Name"
                 placeholder="Doe"
-                classes={[]}
+                classes={["!block flex-1"]}
                 rules={[validationSchema.lastname]}
               />
             </div>

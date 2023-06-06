@@ -33,7 +33,7 @@ const Dashboard: React.FC<props> = React.memo(({ children, title }) => {
   };
   return (
     <>
-      <div className="flex flex-row min-h-screen bg-[#f8f8f8d9]">
+      <div className="flex flex-row w-full min-h-screen bg-[#f8f8f8d9]">
         <aside className="sidebar bg-white w-32 h-screen fixed overflow-y-auto z-10 drop-shadow-sm flex flex-col pb-8">
           <ul className="flex flex-col">
             <li className="logo flex flex-col justify-center items-center">
@@ -139,7 +139,10 @@ const Dashboard: React.FC<props> = React.memo(({ children, title }) => {
                       strokeLinejoin="round"
                       strokeWidth="32"
                     />
-                    <path d="M368 320a32 32 0 1132-32 32 32 0 01-32 32z" />
+                    <path
+                      d="M368 320a32 32 0 1132-32 32 32 0 01-32 32z"
+                      fill="currentColor"
+                    />
                   </svg>
                   <h6 className="font-medium text-typography-300 group-hover:text-primary/60 transition group-hover:duration-150">
                     Transactions
@@ -249,7 +252,9 @@ const Dashboard: React.FC<props> = React.memo(({ children, title }) => {
             </Sidenav>
           </div>
         </aside>
-        <main className={`flex flex-col grow ml-32 ${title}`}>{children}</main>
+        <main className={`relative flex flex-col grow ml-32 ${title}`}>
+          {children}
+        </main>
       </div>
     </>
   );

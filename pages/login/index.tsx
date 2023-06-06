@@ -56,10 +56,7 @@ const Login: NextPage = () => {
   };
 
   const googleAuth = () => {
-    window.open(
-      "https://bc5a-102-22-172-160.ngrok-free.app/api/connect/google",
-      "_blank"
-    );
+    window.open("https://wtrackbackend.mucyochris.com/api/connect/google");
   };
 
   const onFinishedSocialLogin = async (path: string) => {

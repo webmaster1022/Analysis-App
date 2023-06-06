@@ -455,8 +455,8 @@ const Transaction: NextPage = () => {
         <div className="flex justify-between items-center px-6 py-6">
           <h1 className="text-2xl font-semibold">Transactions</h1>
         </div>
-        <div className="flex px-6 py-6 gap-12">
-          <div className="flex-1 grow">
+        <div className="grid xl:grid-cols-3 px-6 py-6 gap-6 xl:gap-12">
+          <div className="grow">
             <div className="bg-white px-4 py-2.5 border-l-4 border-income rounded mb-6">
               <h2 className="text-sm text-typography-900/80 font-semibold">
                 Income
@@ -480,7 +480,7 @@ const Transaction: NextPage = () => {
               </>
             </Loader>
           </div>
-          <div className="flex-1 grow">
+          <div className="grow">
             <div className="bg-white px-4 py-2.5 border-l-4 border-debt rounded mb-6">
               <h2 className="text-sm text-typography-900/80 font-semibold">
                 Debt / Loan
@@ -507,7 +507,7 @@ const Transaction: NextPage = () => {
               </>
             </Loader>
           </div>
-          <div className="flex-1 grow">
+          <div className="grow">
             <div className="bg-white px-4 py-2.5 border-l-4 border-primary rounded mb-6">
               <h2 className="text-sm text-typography-900/80 font-semibold">
                 Expense

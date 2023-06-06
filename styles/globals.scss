@@ -8,6 +8,10 @@
   height: 80px;
 }
 
+main {
+  width: calc(100% - 128px);
+}
+
 // start modal
 .ant-modal {
   .ant-modal-content {
@@ -266,7 +270,7 @@ input {
       align-items: center;
       .ant-collapse-expand-icon {
         display: flex;
-        flex: 0.2;
+        margin-right: 4px;
       }
       .ant-collapse-header-text {
         font-size: 14px;
@@ -333,4 +337,21 @@ input {
   .ant-pagination {
     display: none;
   }
+}
+
+// @media not all and (min-width: 1280px) {
+.transaction-analytics {
+  canvas {
+    width: 100% !important;
+  }
+}
+.wallet-analytics {
+  canvas {
+    width: 100% !important;
+  }
+}
+// }
+
+.budget-table {
+  min-width: 640px;
 }

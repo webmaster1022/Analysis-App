@@ -429,98 +429,102 @@ const Budget: NextPage = (props) => {
         <div className="flex justify-between items-center px-6 py-6">
           <h1 className="text-2xl font-semibold">Budgets</h1>
         </div>
-        <div className="flex flex-col px-6 py-6 gap-4">
-          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-              <tr>
-                <th
-                  scope="col"
-                  className="py-3 px-4 bg-white dark:bg-gray-800 rounded-l"
-                  style={{ width: "50%" }}
+        <div className="relative px-6 py-6">
+          <div className="overflow-x-auto">
+            <div className="budget-table flex flex-col gap-4">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="py-3 px-4 bg-white dark:bg-gray-800 rounded-l"
+                      style={{ width: "50%" }}
+                    >
+                      Budget name
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-4 bg-light-1 dark:bg-gray-800"
+                      style={{ width: "30%" }}
+                    >
+                      Amount
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-4 bg-white dark:bg-gray-800 rounded-r"
+                      style={{ width: "20%" }}
+                    >
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+              <div className="flex-1">
+                <Collapse
+                  bordered={false}
+                  defaultActiveKey={["1", "2", "3"]}
+                  className="site-collapse-custom-collapse"
                 >
-                  Budget name
-                </th>
-                <th
-                  scope="col"
-                  className="py-3 px-4 bg-light-1 dark:bg-gray-800"
-                  style={{ width: "30%" }}
-                >
-                  Amount
-                </th>
-                <th
-                  scope="col"
-                  className="py-3 px-4 bg-white dark:bg-gray-800 rounded-r"
-                  style={{ width: "20%" }}
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <div className="flex-1">
-            <Collapse
-              bordered={false}
-              defaultActiveKey={["1", "2", "3"]}
-              className="site-collapse-custom-collapse"
-            >
-              <Panel
-                header="Income"
-                key="1"
-                className="site-collapse-custom-panel"
-              >
-                {categories ? (
-                  <>
-                    <Table
-                      showHeader={false}
-                      columns={columns}
-                      dataSource={categories.filter(
-                        (i) => i.transaction_type.name === "Income"
-                      )}
-                    />
-                  </>
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </Panel>
-              <Panel
-                header="Debt/Loan"
-                key="2"
-                className="site-collapse-custom-panel"
-              >
-                {categories ? (
-                  <>
-                    <Table
-                      showHeader={false}
-                      columns={columns}
-                      dataSource={categories.filter(
-                        (i) => i.transaction_type.name === "Debt/Loan"
-                      )}
-                    />
-                  </>
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </Panel>
-              <Panel
-                header="Expense"
-                key="3"
-                className="site-collapse-custom-panel"
-              >
-                {categories ? (
-                  <>
-                    <Table
-                      showHeader={false}
-                      columns={columns}
-                      dataSource={categories.filter(
-                        (i) => i.transaction_type.name === "Expense"
-                      )}
-                    />
-                  </>
-                ) : (
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </Panel>
-            </Collapse>
+                  <Panel
+                    header="Income"
+                    key="1"
+                    className="site-collapse-custom-panel"
+                  >
+                    {categories ? (
+                      <>
+                        <Table
+                          showHeader={false}
+                          columns={columns}
+                          dataSource={categories.filter(
+                            (i) => i.transaction_type.name === "Income"
+                          )}
+                        />
+                      </>
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Panel>
+                  <Panel
+                    header="Debt/Loan"
+                    key="2"
+                    className="site-collapse-custom-panel"
+                  >
+                    {categories ? (
+                      <>
+                        <Table
+                          showHeader={false}
+                          columns={columns}
+                          dataSource={categories.filter(
+                            (i) => i.transaction_type.name === "Debt/Loan"
+                          )}
+                        />
+                      </>
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Panel>
+                  <Panel
+                    header="Expense"
+                    key="3"
+                    className="site-collapse-custom-panel"
+                  >
+                    {categories ? (
+                      <>
+                        <Table
+                          showHeader={false}
+                          columns={columns}
+                          dataSource={categories.filter(
+                            (i) => i.transaction_type.name === "Expense"
+                          )}
+                        />
+                      </>
+                    ) : (
+                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    )}
+                  </Panel>
+                </Collapse>
+              </div>
+            </div>
           </div>
         </div>
       </>

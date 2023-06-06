@@ -11,6 +11,7 @@ import { useGetAnalyticsQuery } from "../utils/apis/analytics";
 import { AnalyticsResponse } from "../utils/models";
 import jwt from "jsonwebtoken";
 import { ColumnsType } from "antd/lib/table";
+import format from "date-fns/format";
 
 const { Option } = Select;
 
@@ -228,9 +229,9 @@ const Home: NextPage = () => {
             />
           </div>
         </Navbar>
-        <div className="flex flex-col gap-8 px-6 py-6">
-          <div className="flex flex-wrap gap-4 w-full">
-            <div className="relative flex-1 min-w-0 break-words rounded bg-white drop-shadow-sm">
+        <div className="flex flex-col w-full gap-8 px-6 py-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
+            <div className="relative min-w-0 break-words rounded bg-white drop-shadow-sm">
               <div className="p-4">
                 <div className="flex max-w-full gap-4 items-center">
                   <div className="flex flex-col justify-center bg-income/20 p-3 rounded">
@@ -255,7 +256,7 @@ const Home: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className="relative flex-1 flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
+            <div className="relative flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
               <div className="p-4">
                 <div className="flex max-w-full gap-4 items-center">
                   <div className="flex flex-col justify-center bg-debt/20 p-3 rounded">
@@ -280,7 +281,7 @@ const Home: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className="relative flex-1 flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
+            <div className="relative flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
               <div className="p-4">
                 <div className="flex max-w-full gap-4 items-center">
                   <div className="flex flex-col justify-center bg-primary/20 p-3 rounded">
@@ -324,7 +325,7 @@ const Home: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className="relative flex-1 flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
+            <div className="relative flex flex-col min-w-0 break-words rounded bg-white drop-shadow-sm">
               <div className="p-4">
                 <div className="flex max-w-full gap-4 items-center">
                   <div className="flex flex-col justify-center bg-[#000]/20 p-3 rounded">
@@ -353,17 +354,21 @@ const Home: NextPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex gap-4">
-            <div className="flex flex-col gap-8 basis-8/12">
+          <div className="flex flex-col xl:flex-row w-full gap-4">
+            <div className="flex flex-col w-full xl:w-8/12">
               {isAnalyticsLoading ? (
                 <Skeleton active />
               ) : (
-                <div className="bg-white drop-shadow-sm p-6 h-[500px]">
+                <div className="transaction-analytics bg-white drop-shadow-sm p-6 h-[500px]">
                   {analytics && (
                     <LineChart
                       data={{
                         labels: analytics?.data.transactionsAnalytics.map(
-                          (data) => data.date
+                          (data) => {
+                            const dt = data.date.split("-");
+                            dt.pop();
+                            return dt.join("-");
+                          }
                         ),
                         datasets: [
                           {
@@ -401,65 +406,69 @@ const Home: NextPage = () => {
                 </div>
               )}
             </div>
-            <div className="flex flex-col gap-8 basis-4/12">
-              {isAnalyticsLoading ? (
-                <Skeleton active />
-              ) : (
-                <div className="h-[224px]">
-                  {analytics && (
-                    <PieChart
-                      data={{
-                        labels: Object.keys(
-                          analytics?.data
-                            .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
-                        ),
-                        datasets: [
-                          {
-                            label: "Income",
-                            data: Object.values(
-                              analytics?.data
-                                .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
-                            ),
-                            backgroundColor: [
-                              "#6366f1B3",
-                              "#f59e0bB3",
-                              "#02A7C3B3",
-                            ],
-                            borderColor: [
-                              "#6366f1B3",
-                              "#f59e0bB3",
-                              "#02A7C3B3",
-                            ],
-                            borderWidth: 0,
-                          },
-                        ],
-                      }}
-                      options={WalletOptions}
-                    />
-                  )}
-                </div>
-              )}
-              {isAnalyticsLoading ? (
-                <Skeleton active />
-              ) : (
-                <div>
-                  {analytics && (
-                    <div className="flex flex-col gap-4 p-6">
-                      <div className="text-center">
-                        <h6 className="text-xs text-typography-900/70 font-semibold">
-                          Expense analytics
-                        </h6>
-                      </div>
-                      <Table
-                        columns={columns}
-                        dataSource={analytics?.data.expensesAnalytics}
-                        pagination={false}
-                        rowKey="id"
+            <div className="flex flex-col lg:flex-row xl:flex-col gap-8 w-full xl:w-4/12">
+              <div className="w-full lg:basis-6/12 xl:w-full">
+                {isAnalyticsLoading ? (
+                  <Skeleton active />
+                ) : (
+                  <div className="wallet-analytics h-[264px]">
+                    {analytics && (
+                      <PieChart
+                        data={{
+                          labels: Object.keys(
+                            analytics?.data
+                              .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
+                          ),
+                          datasets: [
+                            {
+                              label: "Income",
+                              data: Object.values(
+                                analytics?.data
+                                  .walletsAnalytics as AnalyticsResponse["data"]["walletsAnalytics"]
+                              ),
+                              backgroundColor: [
+                                "#6366f1B3",
+                                "#f59e0bB3",
+                                "#02A7C3B3",
+                              ],
+                              borderColor: [
+                                "#6366f1B3",
+                                "#f59e0bB3",
+                                "#02A7C3B3",
+                              ],
+                              borderWidth: 0,
+                            },
+                          ],
+                        }}
+                        options={WalletOptions}
                       />
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="w-full lg:basis-6/12 xl:w-full">
+                {isAnalyticsLoading ? (
+                  <Skeleton active />
+                ) : (
+                  <div>
+                    {analytics && (
+                      <div className="flex flex-col gap-4 p-6">
+                        <div className="text-center">
+                          <h6 className="text-xs text-typography-900/70 font-semibold">
+                            Expense analytics
+                          </h6>
+                        </div>
+                        <Table
+                          columns={columns}
+                          dataSource={analytics?.data.expensesAnalytics}
+                          pagination={false}
+                          rowKey="id"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
